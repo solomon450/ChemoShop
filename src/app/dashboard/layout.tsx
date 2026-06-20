@@ -152,7 +152,7 @@ export default function DashboardLayout({
       </header>
 
       {/* ── Main Content Canvas ── */}
-      <main className="ml-64 pt-16 min-h-screen">{children}</main>
+      <main className="ml-64 pt-16 min-h-screen flex-1">{children}</main>
     </div>
   );
 }
