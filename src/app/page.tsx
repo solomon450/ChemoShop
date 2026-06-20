@@ -1,118 +1,303 @@
 "use client";
 
-// Home page — landing page for ChemPortal
+// Home page — exact conversion of ChemTrade Pro landing page
 
+import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { Container } from "@/components/layout/Container";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FlaskConical, FileText, LayoutDashboard, ArrowRight } from "lucide-react";
-import { APP_NAME, NAV_ITEMS } from "@/lib/constants";
+import {
+  Search,
+  ArrowRight,
+  ArrowUpRight,
+  FlaskConical,
+  Microscope,
+  Atom,
+  Pill,
+  Sprout,
+  Droplets,
+  ShieldCheck,
+  Terminal,
+  Clock,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
-const features = [
+/* ─────────────────── DATA ─────────────────── */
+
+const categories = [
   {
-    icon: <FlaskConical className="h-8 w-8 text-primary" />,
-    title: "Chemical Catalog",
+    icon: FlaskConical,
+    title: "Industrial Solvents",
     description:
-      "Browse our comprehensive database of industrial and laboratory chemicals with detailed specifications, pricing, and availability.",
-    href: "/chemicals",
+      "Bulk solvents for extraction, purification, and industrial manufacturing processes.",
   },
   {
-    icon: <FileText className="h-8 w-8 text-primary" />,
-    title: "Request Quotes",
+    icon: Microscope,
+    title: "Laboratory Reagents",
     description:
-      "Submit RFQs to our network of verified suppliers and receive competitive quotes directly through the platform.",
-    href: "/rfq",
+      "High-purity analytical reagents and buffers for research and development.",
   },
   {
-    icon: <LayoutDashboard className="h-8 w-8 text-primary" />,
-    title: "Supplier Dashboard",
+    icon: Atom,
+    title: "Specialty Polymers",
     description:
-      "Manage your chemical inventory, track quote requests, and handle orders all from one centralized dashboard.",
-    href: "/dashboard",
+      "Advanced polymer materials for automotive, electronics, and aerospace industries.",
+  },
+  {
+    icon: Pill,
+    title: "Fine Chemicals",
+    description:
+      "Complex, pure chemical substances used in pharmaceutical and food applications.",
+  },
+  {
+    icon: Sprout,
+    title: "Agrochemicals",
+    description:
+      "Pesticides, fertilizers, and growth regulators for large-scale agricultural operations.",
+  },
+  {
+    icon: Droplets,
+    title: "Surfactants",
+    description:
+      "Surface-active agents for detergents, emulsifiers, and foaming applications.",
   },
 ];
 
+const trendingChemicals = [
+  {
+    name: "Ethanol 99.5%",
+    cas: "CAS: 64-17-5",
+    minOrder: "Min. Order: 1,000L",
+    suppliers: "14 Suppliers",
+    badge: "High Demand",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuCsMt78QHcgFqjDQTord68nPFKMU2b1miahTmgtfKsD2Hmo6vOApIcy62C4rbJb3PoxaTANBLs3K_NBbqFIudZrpolD2ndERWtmRCDYmFvpvMvINxz9_bPi4oeIV3FAxYBDTcq3COYh79wrZzATJXPqc_wbH4-RfcGbTXTdPCcJKKyIltRYaErD93BxAJOGX7l__pRjAr6EHp9fQkDgghOg8QvMxf2JrR1sciRft8oIzhPf8hbvkBWNRGpJg0agOm2F2-ADXGolkCQd",
+  },
+  {
+    name: "Sulfuric Acid",
+    cas: "CAS: 7664-93-9",
+    minOrder: "Min. Order: 500kg",
+    suppliers: "8 Suppliers",
+    badge: null,
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBeBQClygZZ-rjmU61A8N7C_QeMCWQnHAlqDzgq0X_QXceWFrz-d8bADpB5DP_utTXlx1z-itCpHT0NKtW1qaoXvmcY4jkQKtxYD-OIp3OuCjr1wvbWorVGjz0XWR6zKtVyTLM88XCqmGQeKD-8XRAVbgTt2UKO8WJVnqi4Ge3kPESHx9zuJ8A8S1MkChum2FBWA-XTv3gT7vdajBeDrpHP9XYVhaedXi_4B70Jf68pOMTr_AgQpUjoySzHSaEjlw3X-88-mlGdt2aU",
+  },
+  {
+    name: "Sodium Hydroxide",
+    cas: "CAS: 1310-73-2",
+    minOrder: "Min. Order: 2,000kg",
+    suppliers: "22 Suppliers",
+    badge: null,
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBYVHtBiIxUtwKr0jp8ltI3uLnYgqbQ9SB6_EiTXzu9_bXU3ah-gkreN4yJ9F0Wd_q-OcrL4K-qwMt0xy12Rufg-eZQb6HkwOhFYwVjIsoa5AS45qbQEbJsFHkyxuWSTn-1e31jbFcAkbtjZ5mmir-KXSoblSFojlOKV0Bh1G0dBl1eU5dOeV8I2UNIf4FEeJHF0L877tZu2OGel1Kj4MkIoIK-lhqBKSbqfZpyaFcMSwGaPYE5g__Bp2U5wMe7757XXVDpNKHm6mrX",
+  },
+  {
+    name: "Ammonium Nitrate",
+    cas: "CAS: 6484-52-2",
+    minOrder: "Min. Order: 10,000kg",
+    suppliers: "5 Suppliers",
+    badge: null,
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuASGjAJMFse5QBc-rsxwkp0XfIqjH7CzCnv_Y4JJuXSFmF5jHNTJfUBM06TE4qkAl3HRaDHWcqE9bssA21DkA4fF-YFWOQodfmlOGKcN4X7D1haLk0Ia9klleu_sI09CzfQdd5HaCpM6-62jDPzax8hTIEvhhIHfFeL5veLTDymEBORUasuuJUzJUZpMsxBMzMLZh8X1W4smV2-mPoQKqPHncdjVY-8sNWNelkPNof0lrfP-zwWYbzSbxTnw9TKqdVBE9hRKVBPWoBM",
+  },
+];
+
+const complianceFeatures = [
+  {
+    icon: ShieldCheck,
+    title: "100% Verified Suppliers",
+    description:
+      "Rigorous vetting process for all global manufacturing partners.",
+  },
+  {
+    icon: Terminal,
+    title: "API Access",
+    description:
+      "Integrate our chemical database directly into your ERP systems.",
+  },
+  {
+    icon: Clock,
+    title: "Real-time Logistics",
+    description:
+      "Track hazardous material shipments in real-time across borders.",
+  },
+];
+
+/* ─────────────────── COMPONENT ─────────────────── */
+
 export default function Home() {
+  const [searchFocused, setSearchFocused] = useState(false);
+
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Hero Section */}
-      <section className="border-b bg-gradient-to-b from-background to-muted/30">
-        <Container>
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight max-w-3xl">
-              Your Chemical Supply Chain,{" "}
-              <span className="text-primary">Simplified</span>
-            </h1>
-            <p className="mt-6 text-lg text-muted-foreground max-w-2xl">
-              {APP_NAME} connects buyers with verified chemical suppliers.
-              Browse chemicals, request quotes, and manage orders — all in one
-              platform.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4 justify-center">
-              <Link href={NAV_ITEMS[1].href}>
-                <Button size="lg">
-                  Browse Chemicals
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-              <Link href={NAV_ITEMS[2].href}>
-                <Button size="lg" variant="outline">
-                  Request a Quote
-                </Button>
-              </Link>
+      {/* ── Hero Section ── */}
+      <section className="relative w-full py-10 md:py-32 overflow-hidden bg-surface-container-lowest border-b border-outline-variant">
+        <div className="absolute inset-0 subtle-industrial-bg opacity-30" />
+        <div className="relative z-10 max-w-[1440px] mx-auto px-4 md:px-8 flex flex-col items-center text-center">
+          <h1 className="text-headline-xl text-primary mb-6 max-w-3xl">
+            Connecting global manufacturers with verified suppliers.
+          </h1>
+          <div className="w-full max-w-2xl mt-6">
+            <div
+              className={`relative group transition-shadow ${
+                searchFocused ? "shadow-sm" : ""
+              }`}
+            >
+              <span className="absolute inset-y-0 left-4 flex items-center text-outline">
+                <Search className="h-5 w-5" />
+              </span>
+              <input
+                className="w-full h-14 pl-12 pr-4 bg-surface border border-outline-variant rounded focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all text-body-lg"
+                placeholder="Search chemicals (e.g., Ethanol, Sulfuric Acid)"
+                type="text"
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
+              />
+            </div>
+            <div className="flex flex-wrap justify-center gap-4 mt-6">
+              <span className="text-on-surface-variant text-label-sm uppercase tracking-wider">
+                Quick Search:
+              </span>
+              <a
+                className="text-secondary hover:underline text-label-sm"
+                href="#"
+              >
+                Hydrochloric Acid
+              </a>
+              <a className="text-secondary hover:underline text-label-sm" href="#">
+                Acetone
+              </a>
+              <a className="text-secondary hover:underline text-label-sm" href="#">
+                Glycerol
+              </a>
             </div>
           </div>
-        </Container>
+        </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-16">
-        <Container>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tight">Everything You Need</h2>
-            <p className="text-muted-foreground mt-2 max-w-xl mx-auto">
-              A complete platform for chemical procurement and management
-            </p>
-          </div>
+      {/* ── Featured Categories ── */}
+      <section className="py-10 max-w-[1440px] mx-auto px-4 md:px-8">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-headline-lg text-primary">Core Categories</h2>
+          <Link
+            className="text-secondary font-bold hover:underline flex items-center gap-1"
+            href="/chemicals"
+          >
+            View Catalog{" "}
+            <ArrowRight className="h-[18px] w-[18px]" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categories.map((cat) => {
+            const IconComp = cat.icon;
+            return (
+              <div
+                key={cat.title}
+                className="group bg-surface-container-lowest border border-outline-variant p-6 hover:border-secondary transition-all cursor-pointer"
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <IconComp className="text-secondary h-10 w-10" />
+                  <ArrowUpRight className="text-outline-variant group-hover:text-secondary transition-colors h-5 w-5" />
+                </div>
+                <h3 className="text-headline-md text-primary mb-2">
+                  {cat.title}
+                </h3>
+                <p className="text-on-surface-variant text-body-md">
+                  {cat.description}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            {features.map((feature) => (
-              <Link key={feature.href} href={feature.href}>
-                <Card className="h-full transition-shadow hover:shadow-lg hover:border-primary/20">
-                  <CardHeader>
-                    <div className="mb-2">{feature.icon}</div>
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{feature.description}</p>
-                  </CardContent>
-                </Card>
-              </Link>
+      {/* ── Trending Chemicals ── */}
+      <section className="py-10 bg-surface-container-low">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
+            <div>
+              <h2 className="text-headline-lg text-primary">Trending Now</h2>
+              <p className="text-on-surface-variant text-body-md">
+                Most active procurement listings this week.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button className="w-10 h-10 border border-outline-variant bg-surface flex items-center justify-center hover:bg-surface-container-high transition-colors">
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button className="w-10 h-10 border border-outline-variant bg-surface flex items-center justify-center hover:bg-surface-container-high transition-colors">
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {trendingChemicals.map((chem) => (
+              <div
+                key={chem.name}
+                className="bg-surface-container-lowest border border-outline-variant overflow-hidden group"
+              >
+                <div className="h-48 overflow-hidden relative border-b border-outline-variant">
+                  <Image
+                    src={chem.image}
+                    alt={chem.name}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                  {chem.badge && (
+                    <div className="absolute top-2 right-2">
+                      <span className="bg-secondary-container text-on-secondary-container px-2 py-1 text-label-sm uppercase rounded-sm">
+                        {chem.badge}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="p-6">
+                  <h4 className="text-headline-md text-primary mb-1">
+                    {chem.name}
+                  </h4>
+                  <div className="flex items-center gap-2 text-on-surface-variant mb-6">
+                    <span className="font-mono text-label-md bg-surface-container-high px-2 rounded-sm">
+                      {chem.cas}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex justify-between items-center text-body-sm text-outline">
+                      <span>{chem.minOrder}</span>
+                      <span className="text-secondary font-bold">
+                        {chem.suppliers}
+                      </span>
+                    </div>
+                    <button className="w-full py-1 bg-secondary text-on-primary font-bold hover:opacity-90 transition-all mt-2">
+                      View Supplier
+                    </button>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
-        </Container>
+        </div>
       </section>
 
-      {/* Tech Stack Section */}
-      <section className="border-t bg-muted/30 py-16">
-        <Container>
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold tracking-tight">Built With Modern Tech</h2>
-          </div>
-          <div className="flex flex-wrap justify-center gap-3">
-            {["Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui", "React Query", "React Hook Form"].map(
-              (tech) => (
-                <span
-                  key={tech}
-                  className="px-4 py-2 rounded-full border bg-background text-sm font-medium"
-                >
-                  {tech}
-                </span>
-              )
-            )}
-          </div>
-        </Container>
+      {/* ── Compliance Banner ── */}
+      <section className="bg-primary py-6 border-y border-outline-variant">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 flex flex-wrap justify-between items-center gap-4">
+          {complianceFeatures.map((feat) => {
+            const IconComp = feat.icon;
+            return (
+              <div
+                key={feat.title}
+                className="flex items-center gap-4 text-on-primary"
+              >
+                <IconComp className="h-8 w-8 shrink-0" />
+                <div>
+                  <p className="text-headline-md">{feat.title}</p>
+                  <p className="text-body-sm opacity-80">{feat.description}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </section>
     </div>
   );

@@ -1,62 +1,64 @@
 "use client";
 
-// Navbar — main navigation bar
+// Navbar — exact match of ChemTrade Pro top navigation
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { APP_NAME, NAV_ITEMS } from "@/lib/constants";
-import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Bell, ShoppingCart } from "lucide-react";
 
-interface NavbarProps {
-  onMenuToggle?: () => void;
-}
+const navLinks = [
+  { label: "Procurement", href: "/" },
+  { label: "Marketplace", href: "/chemicals" },
+  { label: "Inventory", href: "/rfq" },
+  { label: "Logistics", href: "/dashboard" },
+] as const;
 
-export function Navbar({ onMenuToggle }: NavbarProps) {
+export function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-14 items-center px-4 md:px-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden mr-2"
-          onClick={onMenuToggle}
-        >
-          <Menu className="h-5 w-5" />
-          <span className="sr-only">Toggle menu</span>
-        </Button>
+    <nav className="sticky top-0 z-50 bg-surface border-b border-outline-variant w-full">
+      <div className="flex justify-between items-center h-16 px-4 md:px-8 max-w-[1440px] mx-auto">
+        {/* Logo + Nav Links */}
+        <div className="flex items-center gap-10">
+          <Link href="/" className="text-headline-md font-bold text-primary">
+            ChemTrade Pro
+          </Link>
+          <div className="hidden md:flex items-center gap-6">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={
+                  pathname === link.href
+                    ? "text-secondary font-bold border-b-2 border-secondary pb-1 text-body-md"
+                    : "text-on-surface-variant hover:text-secondary transition-colors text-body-md"
+                }
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
 
-        <Link href="/" className="flex items-center gap-2 mr-6">
-          <span className="font-bold text-lg">{APP_NAME}</span>
-        </Link>
-
-        <nav className="hidden md:flex items-center gap-1">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                pathname === item.href
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="ml-auto flex items-center gap-2">
-          <Button variant="outline" size="sm">
+        {/* Right side: icons + buttons */}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 mr-4">
+            <button className="p-2 text-on-surface-variant hover:bg-surface-container-low rounded transition-all">
+              <Bell className="h-5 w-5" />
+            </button>
+            <button className="p-2 text-on-surface-variant hover:bg-surface-container-low rounded transition-all">
+              <ShoppingCart className="h-5 w-5" />
+            </button>
+          </div>
+          <button className="hidden lg:block px-6 h-10 border border-secondary text-secondary font-bold hover:bg-surface-container-low transition-all">
             Sign In
-          </Button>
-          <Button size="sm">Get Started</Button>
+          </button>
+          <button className="px-6 h-10 bg-secondary text-on-primary font-bold hover:opacity-90 transition-all">
+            Sell Chemicals
+          </button>
         </div>
       </div>
-    </header>
+    </nav>
   );
 }
