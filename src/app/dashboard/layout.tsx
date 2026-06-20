@@ -23,7 +23,7 @@ const sideNavItems = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { label: "My Chemicals", icon: FlaskConical, href: "/dashboard/chemicals" },
   { label: "Add Chemical", icon: CirclePlus, href: "/dashboard/chemicals/new" },
-  { label: "Requests/Orders", icon: Receipt, href: "/dashboard" },
+  { label: "Requests/Orders", icon: Receipt, href: "/dashboard/orders" },
 ];
 
 const footerNavItems = [
@@ -36,6 +36,7 @@ function getPageTitle(pathname: string): string {
   if (pathname === "/dashboard") return "Dashboard";
   if (pathname === "/dashboard/chemicals") return "My Chemicals";
   if (pathname === "/dashboard/chemicals/new") return "Add Chemical";
+  if (pathname === "/dashboard/orders") return "Requests/Orders";
   return "Dashboard";
 }
 
@@ -74,7 +75,10 @@ export default function DashboardLayout({
         {/* Main Tabs */}
         <nav className="flex-1 px-2 space-y-1">
           {sideNavItems.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive =
+              item.href === "/dashboard"
+                ? pathname === "/dashboard"
+                : pathname.startsWith(item.href);
             const IconComp = item.icon;
             return (
               <Link
