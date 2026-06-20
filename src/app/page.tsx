@@ -3,9 +3,10 @@
 // Home page — exact conversion of ChemTrade Pro landing page
 // Trending chemicals data-driven from mock data, cards link to /chemicals/[id]
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Search,
   ArrowRight,
@@ -98,6 +99,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   // Filter chemicals by search query (match name, CAS, formula, category)
   const searchResults = searchQuery.trim()
@@ -124,10 +126,15 @@ export default function Home() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Keep dropdown open when clicking inside it
+  const handleDropdownMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault(); // prevent input blur so dropdown stays visible
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* ── Hero Section ── */}
-      <section className="relative w-full py-10 md:py-32 overflow-hidden bg-surface-container-lowest border-b border-outline-variant">
+      <section className="relative w-full py-10 md:py-32 bg-surface-container-lowest border-b border-outline-variant">
         <div className="absolute inset-0 subtle-industrial-bg opacity-30" />
         <div className="relative z-10 max-w-[1440px] mx-auto px-4 md:px-8 flex flex-col items-center text-center">
           <h1 className="text-headline-xl text-primary mb-6 max-w-3xl">
@@ -157,8 +164,6 @@ export default function Home() {
                 }}
                 onBlur={() => {
                   setSearchFocused(false);
-                  // Delay to allow link click
-                  setTimeout(() => setShowDropdown(false), 200);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Escape") setShowDropdown(false);
@@ -167,18 +172,22 @@ export default function Home() {
 
               {/* Search Results Dropdown */}
               {showDropdown && searchResults.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-surface-container-lowest border border-outline-variant rounded shadow-lg z-50 max-h-[400px] overflow-y-auto">
+                <div className="absolute top-full left-0 right-0 mt-1 bg-surface-container-lowest border border-outline-variant rounded shadow-lg max-h-[400px] overflow-y-auto" style={{ zIndex: 9999 }} onMouseDown={handleDropdownMouseDown}>
                   <div className="p-3 border-b border-outline-variant">
                     <span className="font-mono text-label-sm text-on-surface-variant uppercase">
                       {searchResults.length} Result{searchResults.length !== 1 ? "s" : ""}
                     </span>
                   </div>
                   {searchResults.map((chem) => (
-                    <Link
+                    <button
                       key={chem.id}
-                      href={`/chemicals/${chem.id}`}
-                      className="flex items-center gap-4 px-4 py-3 hover:bg-surface-container-high transition-colors border-b border-outline-variant/30 last:border-b-0"
-                      onMouseDown={() => setShowDropdown(false)}
+                      type="button"
+                      className="flex items-center gap-4 px-4 py-3 hover:bg-surface-container-high transition-colors border-b border-outline-variant/30 last:border-b-0 w-full text-left cursor-pointer"
+                      onClick={() => {
+                        setShowDropdown(false);
+                        setSearchQuery("");
+                        router.push(`/chemicals/${chem.id}`);
+                      }}
                     >
                       <div className="w-10 h-10 border border-outline-variant rounded bg-surface shrink-0 overflow-hidden">
                         <Image
@@ -205,22 +214,26 @@ export default function Home() {
                           {chem.supplier.name}
                         </p>
                       </div>
-                    </Link>
+                    </button>
                   ))}
                 </div>
               )}
 
               {/* No Results */}
               {showDropdown && searchQuery.trim() && searchResults.length === 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-surface-container-lowest border border-outline-variant rounded shadow-lg z-50 p-6 text-center">
+                <div className="absolute top-full left-0 right-0 mt-1 bg-surface-container-lowest border border-outline-variant rounded shadow-lg p-6 text-center" style={{ zIndex: 9999 }} onMouseDown={handleDropdownMouseDown}>
                   <p className="text-on-surface-variant text-body-md">No chemicals found for &lsquo;{searchQuery}&rsquo;</p>
-                  <Link
-                    href="/chemicals"
-                    className="text-secondary text-body-sm font-semibold hover:underline mt-1 inline-block"
-                    onMouseDown={() => setShowDropdown(false)}
+                  <button
+                    type="button"
+                    className="text-secondary text-body-sm font-semibold hover:underline mt-1"
+                    onClick={() => {
+                      setShowDropdown(false);
+                      setSearchQuery("");
+                      router.push("/chemicals");
+                    }}
                   >
                     Browse full catalog
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>
