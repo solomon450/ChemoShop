@@ -1,6 +1,7 @@
 "use client";
 
 // Home page — exact conversion of ChemTrade Pro landing page
+// Trending chemicals data-driven from mock data, cards link to /chemicals/[id]
 
 import { useState } from "react";
 import Image from "next/image";
@@ -21,6 +22,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import { chemicals } from "@/lib/mock-data";
 
 /* ─────────────────── DATA ─────────────────── */
 
@@ -63,45 +65,6 @@ const categories = [
   },
 ];
 
-const trendingChemicals = [
-  {
-    name: "Ethanol 99.5%",
-    cas: "CAS: 64-17-5",
-    minOrder: "Min. Order: 1,000L",
-    suppliers: "14 Suppliers",
-    badge: "High Demand",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCsMt78QHcgFqjDQTord68nPFKMU2b1miahTmgtfKsD2Hmo6vOApIcy62C4rbJb3PoxaTANBLs3K_NBbqFIudZrpolD2ndERWtmRCDYmFvpvMvINxz9_bPi4oeIV3FAxYBDTcq3COYh79wrZzATJXPqc_wbH4-RfcGbTXTdPCcJKKyIltRYaErD93BxAJOGX7l__pRjAr6EHp9fQkDgghOg8QvMxf2JrR1sciRft8oIzhPf8hbvkBWNRGpJg0agOm2F2-ADXGolkCQd",
-  },
-  {
-    name: "Sulfuric Acid",
-    cas: "CAS: 7664-93-9",
-    minOrder: "Min. Order: 500kg",
-    suppliers: "8 Suppliers",
-    badge: null,
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBeBQClygZZ-rjmU61A8N7C_QeMCWQnHAlqDzgq0X_QXceWFrz-d8bADpB5DP_utTXlx1z-itCpHT0NKtW1qaoXvmcY4jkQKtxYD-OIp3OuCjr1wvbWorVGjz0XWR6zKtVyTLM88XCqmGQeKD-8XRAVbgTt2UKO8WJVnqi4Ge3kPESHx9zuJ8A8S1MkChum2FBWA-XTv3gT7vdajBeDrpHP9XYVhaedXi_4B70Jf68pOMTr_AgQpUjoySzHSaEjlw3X-88-mlGdt2aU",
-  },
-  {
-    name: "Sodium Hydroxide",
-    cas: "CAS: 1310-73-2",
-    minOrder: "Min. Order: 2,000kg",
-    suppliers: "22 Suppliers",
-    badge: null,
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBYVHtBiIxUtwKr0jp8ltI3uLnYgqbQ9SB6_EiTXzu9_bXU3ah-gkreN4yJ9F0Wd_q-OcrL4K-qwMt0xy12Rufg-eZQb6HkwOhFYwVjIsoa5AS45qbQEbJsFHkyxuWSTn-1e31jbFcAkbtjZ5mmir-KXSoblSFojlOKV0Bh1G0dBl1eU5dOeV8I2UNIf4FEeJHF0L877tZu2OGel1Kj4MkIoIK-lhqBKSbqfZpyaFcMSwGaPYE5g__Bp2U5wMe7757XXVDpNKHm6mrX",
-  },
-  {
-    name: "Ammonium Nitrate",
-    cas: "CAS: 6484-52-2",
-    minOrder: "Min. Order: 10,000kg",
-    suppliers: "5 Suppliers",
-    badge: null,
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuASGjAJMFse5QBc-rsxwkp0XfIqjH7CzCnv_Y4JJuXSFmF5jHNTJfUBM06TE4qkAl3HRaDHWcqE9bssA21DkA4fF-YFWOQodfmlOGKcN4X7D1haLk0Ia9klleu_sI09CzfQdd5HaCpM6-62jDPzax8hTIEvhhIHfFeL5veLTDymEBORUasuuJUzJUZpMsxBMzMLZh8X1W4smV2-mPoQKqPHncdjVY-8sNWNelkPNof0lrfP-zwWYbzSbxTnw9TKqdVBE9hRKVBPWoBM",
-  },
-];
-
 const complianceFeatures = [
   {
     icon: ShieldCheck,
@@ -122,6 +85,11 @@ const complianceFeatures = [
       "Track hazardous material shipments in real-time across borders.",
   },
 ];
+
+// Trending chemicals — pick top 4 from mock data by supplier count
+const trendingChemicals = [...chemicals]
+  .sort((a, b) => b.supplierCount - a.supplierCount)
+  .slice(0, 4);
 
 /* ─────────────────── COMPONENT ─────────────────── */
 
@@ -158,18 +126,24 @@ export default function Home() {
               <span className="text-on-surface-variant text-label-sm uppercase tracking-wider">
                 Quick Search:
               </span>
-              <a
+              <Link
                 className="text-secondary hover:underline text-label-sm"
-                href="#"
+                href="/chemicals"
               >
                 Hydrochloric Acid
-              </a>
-              <a className="text-secondary hover:underline text-label-sm" href="#">
+              </Link>
+              <Link
+                className="text-secondary hover:underline text-label-sm"
+                href="/chemicals"
+              >
                 Acetone
-              </a>
-              <a className="text-secondary hover:underline text-label-sm" href="#">
+              </Link>
+              <Link
+                className="text-secondary hover:underline text-label-sm"
+                href="/chemicals"
+              >
                 Glycerol
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -232,9 +206,10 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {trendingChemicals.map((chem) => (
-              <div
-                key={chem.name}
-                className="bg-surface-container-lowest border border-outline-variant overflow-hidden group"
+              <Link
+                key={chem.id}
+                href={`/chemicals/${chem.id}`}
+                className="bg-surface-container-lowest border border-outline-variant overflow-hidden group block"
               >
                 <div className="h-48 overflow-hidden relative border-b border-outline-variant">
                   <Image
@@ -244,10 +219,10 @@ export default function Home() {
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
-                  {chem.badge && (
+                  {chem.trendingBadge && (
                     <div className="absolute top-2 right-2">
                       <span className="bg-secondary-container text-on-secondary-container px-2 py-1 text-label-sm uppercase rounded-sm">
-                        {chem.badge}
+                        {chem.trendingBadge}
                       </span>
                     </div>
                   )}
@@ -258,22 +233,22 @@ export default function Home() {
                   </h4>
                   <div className="flex items-center gap-2 text-on-surface-variant mb-6">
                     <span className="font-mono text-label-md bg-surface-container-high px-2 rounded-sm">
-                      {chem.cas}
+                      CAS: {chem.cas}
                     </span>
                   </div>
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between items-center text-body-sm text-outline">
-                      <span>{chem.minOrder}</span>
+                      <span>Min. Order: {chem.minOrderQty}</span>
                       <span className="text-secondary font-bold">
-                        {chem.suppliers}
+                        {chem.supplierCount} Suppliers
                       </span>
                     </div>
-                    <button className="w-full py-1 bg-secondary text-on-primary font-bold hover:opacity-90 transition-all mt-2">
+                    <span className="block w-full py-1 bg-secondary text-on-primary font-bold text-center hover:opacity-90 transition-all mt-2">
                       View Supplier
-                    </button>
+                    </span>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

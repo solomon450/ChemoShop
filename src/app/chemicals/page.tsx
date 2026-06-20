@@ -1,76 +1,13 @@
 "use client";
 
 // Chemicals / Marketplace page — exact conversion of ChemTrade Pro search results
+// Data-driven: uses mock data, rows link to /chemicals/[id]
 
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight, ChevronLeft, AlertTriangle, Info } from "lucide-react";
-
-/* ─────────────────── DATA ─────────────────── */
-
-const chemicals = [
-  {
-    name: "Ethanol 99.5%",
-    cas: "CAS 64-17-5",
-    formula: "C\u2082H\u2086O",
-    purity: "99.5% ACS Grade",
-    supplier: "PureChem Logistics",
-    location: "Houston, USA",
-    price: "$1.20 / L",
-    minOrder: "Min. 200L",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuB71P6k8SV7toXxqjhLPdESzGGPisbpS8bHwkDN-H1Zu9cHumURBwYxmBNOBM1CzetCfPobsDyQPwbhDfdy4gMigpquY7_6MpbmoFdk5W-ZW3Dn0SbJU5jkePGzGEvlTlpStQ0dgVtJNV5Bh0ZpMGTMgUrZelMoh6wKYPLjo1Q7ZDNzhBDHvbq5jpiiYaPXXt8xq86qnUfVXfLeuzfZQCSEopN-DML_qr5uTLuQDyu8v6Wahd6Y3W9pbjD7RxvKwBGEkkKS56Vwhbyz",
-  },
-  {
-    name: "Acetone",
-    cas: "CAS 67-64-1",
-    formula: "C\u2083H\u2086O",
-    purity: "98% HPLC Grade",
-    supplier: "EuroSolv GmbH",
-    location: "Hamburg, DE",
-    price: "Request Quote",
-    minOrder: "Bulk Only",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAGOM3Y80QNeo6DVWNULwShEn6fpIqdZ-r5BGxPZlmoCWm6YUPWnA-nHcVZgeAzQAX7Tyze1nTbPg2EaoMHQ6ls1xtMTUaWIKlf868UY29tpaZU4ZMw4dX6Fy0nWUbd_affw45AWC_TjkFpHe81VFZb7pt9eadfBRbL0QaY_1WzNl82a1kMNGbUNdTWdCKFv5xNvkEZDkW7kkoi-i8V_Kaf5i6qO-umylyusTMzoVABGLkwNN4BZrr-XPB_6MJruK6CRyBoSyhxtPP-",
-  },
-  {
-    name: "Isopropanol (IPA)",
-    cas: "CAS 67-63-0",
-    formula: "C\u2083H\u2088O",
-    purity: "99.9% Spectroscopic",
-    supplier: "Nippon Chem-Corp",
-    location: "Osaka, JP",
-    price: "$0.95 / L",
-    minOrder: "Min. 1,000L",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAbOrBqOszlwtOib9rNcqgOCe2RVdMbJQ8oEckPEDpCLL84YD6-dLPbTmaA6yXWaK9eHMXjuKbuwgz8EOEQAZ68271yCqQAmNI9dxb5DShL4kt6Q4wnk3IrisHrYAZMRfXLYDNXgWG-J9h0wcVqWlNQLtj6AKwugGDk5Wz_rQupcY4QcJe9FXOCarHq_NYuphQhTyVUStn_xQXPmtRUzDsYYWKa2sXjN15vVmxXzc2kaXvgb9AINiuZ6Xu5itpYa3-yvJdY_p2_QY9M",
-  },
-  {
-    name: "Methanol",
-    cas: "CAS 67-56-1",
-    formula: "CH\u2083OH",
-    purity: "99.8% Technical",
-    supplier: "Apex Industrial",
-    location: "Chicago, USA",
-    price: "$0.82 / L",
-    minOrder: "Min. 500L",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAoIWh64tOKoZtQRR8eIeXg7Si3eQL0vLNSlmzw4cEu9LPmbQd8ihL2GqXbiDsvlFjpx0BPf2LTkamq0gn7_2SaS86QOREFvj0ZqLIM2d8Qm065JdsDv5PY_TXJNQa5r-5bPP-Qua61mg8vCNOvPTSxK59p_NoyuZES1CtN_KhUWfwLNdiJ8i-tRyl6Yqh6dZx0_oaUNjM8m8g7b5xgJKK23DVl_1geh36M6pE7iB7aB5__RB3UB6gOQgrBiwRp4mcdb2fEemnhKI9f",
-  },
-  {
-    name: "Dichloromethane",
-    cas: "CAS 75-09-2",
-    formula: "CH\u2082Cl\u2082",
-    purity: "99.5% Reagent",
-    supplier: "SynthGlobal Inc.",
-    location: "Toronto, CA",
-    price: "$2.45 / kg",
-    minOrder: "Min. 50kg",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuD3rDUsCz3YiG1KzljUp5Lq5lRuzqmWurD7dGebVdM3aKdMDrLELgS8T8NQw-sxqZ2EG1wB9xRV0V6QmI-FNx46An7xpRRyVR8zyme-CCa5kcKwmQuKurJe540oNF7DdjLI_2g-GOSbFqGfvvLEusmfknTECeDIIi5xact74-tP2ki0It8IHaGKJ2NRgWHMUOsN0a3Mq-Zh06m_0cJM88pLubHIA-m9VIcV7TAHVtHMueygfWQktR8IPc0AUFA7BTGQH5aHR5Cy_7sS",
-  },
-];
+import { chemicals } from "@/lib/mock-data";
 
 /* ─────────────────── COMPONENT ─────────────────── */
 
@@ -95,7 +32,8 @@ export default function ChemicalsPage() {
             Results for &lsquo;Solvents&rsquo;
           </h1>
           <p className="text-on-surface-variant mt-1 text-body-md">
-            1,248 verified chemical listings found matching your criteria.
+            {chemicals.length} verified chemical listings found matching your
+            criteria.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -297,12 +235,15 @@ export default function ChemicalsPage() {
                 <tbody className="divide-y divide-outline-variant text-body-md">
                   {chemicals.map((chem) => (
                     <tr
-                      key={chem.name}
+                      key={chem.id}
                       className="transition-colors hover:bg-surface-container-low cursor-pointer"
                     >
-                      {/* Product */}
+                      {/* Product — links to detail page */}
                       <td className="px-4 py-4">
-                        <div className="flex items-center gap-4">
+                        <Link
+                          href={`/chemicals/${chem.id}`}
+                          className="flex items-center gap-4"
+                        >
                           <div className="w-10 h-10 border border-outline-variant rounded bg-surface shrink-0 overflow-hidden">
                             <Image
                               src={chem.image}
@@ -313,14 +254,14 @@ export default function ChemicalsPage() {
                             />
                           </div>
                           <div>
-                            <div className="font-semibold text-primary">
+                            <div className="font-semibold text-primary hover:text-secondary transition-colors">
                               {chem.name}
                             </div>
                             <div className="text-body-sm text-on-surface-variant">
-                              {chem.cas}
+                              {chem.casDisplay}
                             </div>
                           </div>
-                        </div>
+                        </Link>
                       </td>
 
                       {/* Formula */}
@@ -331,33 +272,40 @@ export default function ChemicalsPage() {
                       {/* Purity */}
                       <td className="px-4 py-4">
                         <span className="bg-surface-container-high px-2 py-0.5 rounded text-body-sm">
-                          {chem.purity}
+                          {chem.purity} {chem.grade}
                         </span>
                       </td>
 
                       {/* Supplier */}
                       <td className="px-4 py-4">
-                        <div className="text-on-surface">{chem.supplier}</div>
+                        <div className="text-on-surface">
+                          {chem.supplier.name}
+                        </div>
                         <div className="text-body-sm text-on-surface-variant">
-                          {chem.location}
+                          {chem.supplier.location}
                         </div>
                       </td>
 
                       {/* Price */}
                       <td className="px-4 py-4">
                         <div className="font-bold text-secondary">
-                          {chem.price}
+                          {chem.price === "Request Quote"
+                            ? chem.price
+                            : `${chem.price} / ${chem.unit}`}
                         </div>
                         <div className="text-body-sm text-on-surface-variant">
                           {chem.minOrder}
                         </div>
                       </td>
 
-                      {/* Action */}
+                      {/* Action — links to detail page */}
                       <td className="px-4 py-4 text-right">
-                        <button className="px-4 py-1.5 border border-secondary text-secondary rounded hover:bg-secondary hover:text-on-secondary transition-all text-body-sm font-medium">
+                        <Link
+                          href={`/chemicals/${chem.id}`}
+                          className="inline-block px-4 py-1.5 border border-secondary text-secondary rounded hover:bg-secondary hover:text-on-secondary transition-all text-body-sm font-medium"
+                        >
                           View Details
-                        </button>
+                        </Link>
                       </td>
                     </tr>
                   ))}
@@ -368,7 +316,7 @@ export default function ChemicalsPage() {
             {/* ── Pagination ── */}
             <div className="p-4 flex items-center justify-between border-t border-outline-variant bg-surface-container-low">
               <span className="text-body-sm text-on-surface-variant">
-                Showing 1-10 of 1,248 results
+                Showing 1-{chemicals.length} of {chemicals.length} results
               </span>
               <div className="flex gap-1">
                 <button
@@ -385,12 +333,6 @@ export default function ChemicalsPage() {
                 </button>
                 <button className="w-8 h-8 flex items-center justify-center border border-outline-variant rounded hover:bg-surface-container-high text-body-sm">
                   3
-                </button>
-                <span className="w-8 h-8 flex items-center justify-center text-body-sm">
-                  ...
-                </span>
-                <button className="w-8 h-8 flex items-center justify-center border border-outline-variant rounded hover:bg-surface-container-high text-body-sm">
-                  125
                 </button>
                 <button className="w-8 h-8 flex items-center justify-center border border-outline-variant rounded hover:bg-surface-container-high">
                   <ChevronRight className="h-[18px] w-[18px]" />

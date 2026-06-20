@@ -1,9 +1,11 @@
 "use client";
 
 // Chemical Detail page — exact conversion of ChemTrade Pro product detail
+// Data-driven: uses useParams to find chemical from mock data by ID
 
 import { useState } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import {
   ChevronRight,
@@ -19,10 +21,15 @@ import {
   CheckCircle,
   Loader2,
 } from "lucide-react";
+import { chemicals, getChemicalById } from "@/lib/mock-data";
 
 /* ─────────────────── COMPONENT ─────────────────── */
 
 export default function ChemicalDetailPage() {
+  const params = useParams();
+  const id = params.id as string;
+  const chem = getChemicalById(id);
+
   const [quoteStatus, setQuoteStatus] = useState<
     "idle" | "processing" | "sent"
   >("idle");
@@ -32,6 +39,36 @@ export default function ChemicalDetailPage() {
     setTimeout(() => setQuoteStatus("sent"), 1200);
   };
 
+  // 404 state
+  if (!chem) {
+    return (
+      <main className="max-w-[1440px] mx-auto px-4 md:px-8 py-6">
+        <nav className="flex items-center gap-1 mb-6 text-on-surface-variant font-mono text-label-sm">
+          <Link className="hover:text-secondary" href="/chemicals">
+            Marketplace
+          </Link>
+          <ChevronRight className="h-3.5 w-3.5" />
+          <span className="text-on-surface">Not Found</span>
+        </nav>
+        <div className="flex flex-col items-center justify-center py-20">
+          <AlertTriangle className="h-12 w-12 text-on-surface-variant mb-4" />
+          <h1 className="text-headline-lg text-primary mb-2">
+            Chemical Not Found
+          </h1>
+          <p className="text-body-md text-on-surface-variant mb-6">
+            The chemical you are looking for does not exist or has been removed.
+          </p>
+          <Link
+            href="/chemicals"
+            className="px-6 py-2 bg-secondary text-on-secondary rounded font-semibold hover:opacity-90 transition-opacity"
+          >
+            Back to Marketplace
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="max-w-[1440px] mx-auto px-4 md:px-8 py-6">
       {/* ── Breadcrumbs ── */}
@@ -40,43 +77,50 @@ export default function ChemicalDetailPage() {
           Marketplace
         </Link>
         <ChevronRight className="h-3.5 w-3.5" />
-        <span>Solvents</span>
+        <span>{chem.category}</span>
         <ChevronRight className="h-3.5 w-3.5" />
-        <span className="text-on-surface">Ethanol 99.5%</span>
+        <span className="text-on-surface">{chem.name}</span>
       </nav>
 
       {/* ── Page Title & Formula Section ── */}
       <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-headline-xl text-primary mb-1">
-            Ethanol 99.5% (ACS Grade)
+            {chem.fullName}
           </h1>
           <div className="flex items-center gap-10">
             <div className="flex items-center gap-2">
               <span className="font-mono text-label-md text-on-surface-variant uppercase tracking-wider">
                 Formula:
               </span>
-              <span className="font-mono text-label-md font-bold">
-                C<sub>2</sub>H<sub>6</sub>O
-              </span>
+              <span
+                className="font-mono text-label-md font-bold"
+                dangerouslySetInnerHTML={{ __html: chem.formulaHtml }}
+              />
             </div>
             <div className="flex items-center gap-2">
               <span className="font-mono text-label-md text-on-surface-variant uppercase tracking-wider">
                 CAS:
               </span>
               <span className="font-mono text-label-md font-bold">
-                64-17-5
+                {chem.cas}
               </span>
             </div>
           </div>
         </div>
         <div className="flex gap-2">
-          <span className="bg-tertiary-container text-on-tertiary-container px-2 py-1 rounded text-label-sm font-mono border border-outline-variant">
-            HAZARDOUS
-          </span>
-          <span className="bg-surface-container-highest text-on-surface px-2 py-1 rounded text-label-sm font-mono border border-outline-variant">
-            ISO 9001
-          </span>
+          {chem.badges.map((badge) => (
+            <span
+              key={badge}
+              className={`px-2 py-1 rounded text-label-sm font-mono border border-outline-variant ${
+                badge === "HAZARDOUS"
+                  ? "bg-tertiary-container text-on-tertiary-container"
+                  : "bg-surface-container-highest text-on-surface"
+              }`}
+            >
+              {badge}
+            </span>
+          ))}
         </div>
       </div>
 
@@ -85,8 +129,8 @@ export default function ChemicalDetailPage() {
         {/* Product Image Section */}
         <div className="col-span-12 md:col-span-7 lg:col-span-8 bg-surface-container-lowest border border-outline-variant rounded p-6 flex items-center justify-center relative overflow-hidden h-[450px]">
           <Image
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiDqWOwCW8zbZ1Y7lPsOxXJf7jQTL13nCJOGIejyyfHwwGQUNgDG7Ay_r4fLVYnO8W3a4yssl798-gqIAMZGVwdnyK41IB8gQ_ZRy6dcyvMbCiHKqTkokn_ci3UhK0t0MpNXwlp55v9I6jL4Lu18uk3zJyBsu8EMqYtdnCPEZ35Lem-uDvsUaZyEdaDPCvptmJAnSXZdtBFvC9TwRVMBtiWH7_tj-hYD-cYLWtUt6bAD12SNv0ebxiuApQugnjw3RM0Grx3qlu1xmo"
-            alt="Ethanol 99.5% ACS Grade industrial drum"
+            src={chem.heroImage}
+            alt={`${chem.name} industrial product`}
             width={600}
             height={400}
             className="max-h-full object-contain"
@@ -106,14 +150,26 @@ export default function ChemicalDetailPage() {
               Market Availability
             </h3>
             <div className="mb-6">
-              <div className="flex items-baseline gap-1">
-                <span className="text-headline-lg text-primary">$1.20</span>
-                <span className="text-body-md text-on-surface-variant">
-                  / Liter
-                </span>
-              </div>
+              {chem.price === "Request Quote" ? (
+                <div className="flex items-baseline gap-1">
+                  <span className="text-headline-lg text-primary">
+                    Request Quote
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-baseline gap-1">
+                  <span className="text-headline-lg text-primary">
+                    {chem.price}
+                  </span>
+                  <span className="text-body-md text-on-surface-variant">
+                    / {chem.unit === "kg" ? "Kilogram" : "Liter"}
+                  </span>
+                </div>
+              )}
               <p className="text-secondary font-mono text-label-sm mt-1">
-                In Stock - Ships from Houston, USA
+                {chem.status === "Out of Stock"
+                  ? `Out of Stock — Ships from ${chem.supplier.location}`
+                  : `In Stock - Ships from ${chem.supplier.location}`}
               </p>
             </div>
             <div className="space-y-4 mb-10">
@@ -121,17 +177,17 @@ export default function ChemicalDetailPage() {
                 <span className="text-on-surface-variant">
                   Minimum Order
                 </span>
-                <span className="font-bold">200L (1 Drum)</span>
+                <span className="font-bold">{chem.minOrderQty}</span>
               </div>
               <div className="flex justify-between py-2 border-b border-outline-variant/30">
                 <span className="text-on-surface-variant">Lead Time</span>
-                <span className="font-bold">3-5 Business Days</span>
+                <span className="font-bold">{chem.leadTime}</span>
               </div>
               <div className="flex justify-between py-2 border-b border-outline-variant/30">
                 <span className="text-on-surface-variant">
                   Shipping Terms
                 </span>
-                <span className="font-bold">FOB Houston</span>
+                <span className="font-bold">{chem.shippingTerms}</span>
               </div>
             </div>
             <div className="space-y-2">
@@ -189,14 +245,16 @@ export default function ChemicalDetailPage() {
                       <th className="py-2 font-mono text-label-md text-on-surface-variant uppercase">
                         Purity
                       </th>
-                      <td className="py-2 font-bold text-right">≥ 99.5%</td>
+                      <td className="py-2 font-bold text-right">
+                        {chem.specs.purity}
+                      </td>
                     </tr>
                     <tr>
                       <th className="py-2 font-mono text-label-md text-on-surface-variant uppercase">
                         Grade
                       </th>
                       <td className="py-2 font-bold text-right">
-                        ACS Reagent
+                        {chem.specs.grade}
                       </td>
                     </tr>
                     <tr>
@@ -204,7 +262,7 @@ export default function ChemicalDetailPage() {
                         Boiling Point
                       </th>
                       <td className="py-2 font-bold text-right">
-                        78.37 °C
+                        {chem.specs.boilingPoint}
                       </td>
                     </tr>
                   </tbody>
@@ -218,7 +276,7 @@ export default function ChemicalDetailPage() {
                         Flash Point
                       </th>
                       <td className="py-2 font-bold text-right">
-                        13 °C (Closed Cup)
+                        {chem.specs.flashPoint}
                       </td>
                     </tr>
                     <tr>
@@ -226,14 +284,16 @@ export default function ChemicalDetailPage() {
                         Density
                       </th>
                       <td className="py-2 font-bold text-right">
-                        0.789 g/cm³ @ 20°C
+                        {chem.specs.density}
                       </td>
                     </tr>
                     <tr>
                       <th className="py-2 font-mono text-label-md text-on-surface-variant uppercase">
                         Moisture
                       </th>
-                      <td className="py-2 font-bold text-right">≤ 0.5%</td>
+                      <td className="py-2 font-bold text-right">
+                        {chem.specs.moisture}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -246,15 +306,7 @@ export default function ChemicalDetailPage() {
               Product Description
             </h2>
             <p className="text-body-lg text-on-surface-variant leading-relaxed">
-              Ethanol 99.5% (ACS Grade) is a high-purity solvent essential for
-              analytical chemistry, pharmaceuticals, and precision
-              manufacturing. This reagent-grade absolute alcohol meets or exceeds
-              American Chemical Society (ACS) standards for purity and residue
-              control. It is commonly utilized as a cleaning agent in
-              semiconductor production, a medium for pharmaceutical synthesis,
-              and a critical component in microbiological laboratories for
-              sterilization and specimen preservation. The low moisture content
-              ensures minimal interference in sensitive chemical reactions.
+              {chem.description}
             </p>
           </section>
         </div>
@@ -271,11 +323,11 @@ export default function ChemicalDetailPage() {
             <div className="p-6">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 bg-primary rounded flex items-center justify-center text-on-primary font-bold text-lg">
-                  PC
+                  {chem.supplier.initials}
                 </div>
                 <div>
                   <h4 className="text-headline-md text-headline-md leading-none">
-                    PureChem Logistics
+                    {chem.supplier.name}
                   </h4>
                   <div className="flex items-center gap-1 mt-1">
                     <BadgeCheck className="h-4 w-4 text-secondary" />
@@ -289,19 +341,19 @@ export default function ChemicalDetailPage() {
                 <div className="flex items-center gap-2">
                   <MapPin className="h-5 w-5 text-on-surface-variant shrink-0" />
                   <span className="text-body-md">
-                    Houston, TX, United States
+                    {chem.supplier.fullAddress}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Award className="h-5 w-5 text-on-surface-variant shrink-0" />
                   <span className="text-body-md">
-                    ISO 9001:2015 Certified
+                    {chem.supplier.certification}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-on-surface-variant shrink-0" />
                   <span className="text-body-md">
-                    On-time Delivery Rate: 98.4%
+                    {chem.supplier.onTimeRate}
                   </span>
                 </div>
               </div>
@@ -362,24 +414,64 @@ export default function ChemicalDetailPage() {
               Regulatory &amp; Safety Information
             </h3>
             <p className="text-body-md text-on-error-container/80 mb-4">
-              Ethanol is a highly flammable liquid and vapor. Keep away from
-              heat, sparks, open flames, and hot surfaces. - No smoking. Keep
-              container tightly closed.
+              {chem.regulatory.safetyNote}
             </p>
             <div className="flex flex-wrap gap-4">
               <span className="font-mono text-label-sm bg-error-container text-on-error-container px-2 py-1 rounded border border-destructive/20 uppercase">
-                UN Number: 1170
+                UN Number: {chem.regulatory.unNumber}
               </span>
               <span className="font-mono text-label-sm bg-error-container text-on-error-container px-2 py-1 rounded border border-destructive/20 uppercase">
-                Hazard Class: 3
+                Hazard Class: {chem.regulatory.hazardClass}
               </span>
               <span className="font-mono text-label-sm bg-error-container text-on-error-container px-2 py-1 rounded border border-destructive/20 uppercase">
-                Packing Group: II
+                Packing Group: {chem.regulatory.packingGroup}
               </span>
             </div>
           </div>
         </div>
       </section>
+
+      {/* ── Related Chemicals (back-link) ── */}
+      <div className="mt-8 flex items-center justify-between">
+        <Link
+          href="/chemicals"
+          className="text-secondary font-semibold text-body-md hover:underline flex items-center gap-2"
+        >
+          <ChevronRight className="h-4 w-4 rotate-180" />
+          Back to Marketplace
+        </Link>
+        {/* Navigate to next/prev chemical */}
+        <div className="flex gap-2">
+          {(() => {
+            const currentIndex = chemicals.findIndex((c) => c.id === chem.id);
+            const prevChem = currentIndex > 0 ? chemicals[currentIndex - 1] : null;
+            const nextChem =
+              currentIndex < chemicals.length - 1
+                ? chemicals[currentIndex + 1]
+                : null;
+            return (
+              <>
+                {prevChem && (
+                  <Link
+                    href={`/chemicals/${prevChem.id}`}
+                    className="px-4 py-2 border border-outline-variant rounded text-body-sm text-on-surface-variant hover:bg-surface-container-high transition-colors"
+                  >
+                    {prevChem.name}
+                  </Link>
+                )}
+                {nextChem && (
+                  <Link
+                    href={`/chemicals/${nextChem.id}`}
+                    className="px-4 py-2 border border-outline-variant rounded text-body-sm text-on-surface-variant hover:bg-surface-container-high transition-colors"
+                  >
+                    {nextChem.name}
+                  </Link>
+                )}
+              </>
+            );
+          })()}
+        </div>
+      </div>
     </main>
   );
 }
