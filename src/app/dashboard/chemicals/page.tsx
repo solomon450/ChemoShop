@@ -73,7 +73,7 @@ export default function DashboardChemicalsPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
   return (
-    <>
+    <div className="px-6 py-10 max-w-[1440px] mx-auto">
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
         <div>
@@ -307,7 +307,7 @@ export default function DashboardChemicalsPage() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

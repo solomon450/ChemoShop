@@ -79,7 +79,7 @@ export default function AddChemicalPage() {
   };
 
   return (
-    <div className="max-w-[1000px] mx-auto p-10">
+    <div className="max-w-[1000px] mx-auto px-10 pb-10">
       {/* Header Section */}
       <div className="mb-6">
         <h2 className="text-headline-lg text-primary">New Chemical Listing</h2>
