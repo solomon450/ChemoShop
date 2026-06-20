@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ChemTrade Pro | Supplier Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#dbe1ff",
+                    "on-background": "#191c1e",
+                    "surface-container": "#eceef0",
+                    "on-primary-fixed": "#131b2e",
+                    "on-secondary-container": "#fefcff",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#d8dadc",
+                    "primary-fixed": "#dae2fd",
+                    "on-secondary-fixed": "#00174b",
+                    "primary-container": "#131b2e",
+                    "tertiary-container": "#0b1c30",
+                    "secondary-container": "#316bf3",
+                    "on-primary-container": "#7c839b",
+                    "surface-variant": "#e0e3e5",
+                    "on-tertiary": "#ffffff",
+                    "background": "#f7f9fb",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "secondary": "#0051d5",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "primary-fixed-dim": "#bec6e0",
+                    "inverse-primary": "#bec6e0",
+                    "surface-tint": "#565e74",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f2f4f6",
+                    "primary": "#000000",
+                    "outline": "#76777d",
+                    "on-secondary-fixed-variant": "#003ea8",
+                    "on-surface-variant": "#45464d",
+                    "error": "#ba1a1a",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "tertiary-fixed": "#d3e4fe",
+                    "on-surface": "#191c1e",
+                    "on-primary": "#ffffff",
+                    "outline-variant": "#c6c6cd",
+                    "surface": "#f7f9fb",
+                    "tertiary": "#000000",
+                    "surface-container-high": "#e6e8ea",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "surface-container-highest": "#e0e3e5",
+                    "inverse-surface": "#2d3133",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "on-tertiary-container": "#75859d",
+                    "on-error": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-bright": "#f7f9fb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-desktop": "32px",
+                    "xl": "40px",
+                    "gutter": "16px",
+                    "max-width": "1440px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "margin-mobile": "16px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "label-md": ["JetBrains Mono"],
+                    "headline-xl": ["Inter"],
+                    "label-sm": ["JetBrains Mono"],
+                    "headline-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-md": ["13px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-sm": ["12px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f7f9fb;
+            color: #191c1e;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c6c6cd;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- SIDE NAVIGATION BAR -->
+<!-- JSON MAPPING: SideNavBar style_shell_layout, style_bg_color, style_separation_logic -->
+<aside class="flex flex-col h-full border-r border-outline-variant py-lg bg-surface-container-lowest dark:bg-surface-container-low w-64 flex-shrink-0 z-50">
+<!-- Brand Header -->
+<div class="px-md mb-xl">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Supplier Portal</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-70">v2.4.0</p>
+</div>
+<!-- Main Tabs -->
+<nav class="flex-1 px-sm space-y-1 overflow-y-auto custom-scrollbar">
+<!-- Dashboard Tab (Inactive) -->
+<a class="flex items-center gap-3 px-md py-2.5 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<!-- My Chemicals Tab (ACTIVE) -->
+<!-- JSON MAPPING: style_active_navigation -->
+<a class="flex items-center gap-3 px-md py-2.5 font-label-md text-label-md text-secondary dark:text-secondary-fixed-dim bg-secondary-fixed dark:bg-primary-container font-bold scale-98 active:scale-95 transition-transform cursor-pointer" href="#">
+<span class="material-symbols-outlined" data-icon="science" style="font-variation-settings: 'FILL' 1;">science</span>
+                My Chemicals
+            </a>
+<!-- Add Chemical Tab (Inactive) -->
+<a class="flex items-center gap-3 px-md py-2.5 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+                Add Chemical
+            </a>
+<!-- Requests/Orders Tab (Inactive) -->
+<a class="flex items-center gap-3 px-md py-2.5 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+                Requests/Orders
+            </a>
+</nav>
+<!-- CTA Section -->
+<div class="px-md mt-lg">
+<button class="w-full bg-primary text-on-primary py-2 px-md font-label-md text-label-md rounded border border-primary hover:opacity-90 transition-opacity">
+                Upgrade Plan
+            </button>
+</div>
+<!-- Footer Tabs -->
+<div class="px-sm pt-lg mt-lg border-t border-outline-variant">
+<a class="flex items-center gap-3 px-md py-2.5 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                Help Center
+            </a>
+<a class="flex items-center gap-3 px-md py-2.5 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<!-- MAIN CONTENT AREA -->
+<main class="flex-1 flex flex-col min-w-0 bg-background overflow-hidden">
+<!-- TOP NAVIGATION BAR -->
+<!-- JSON MAPPING: TopNavBar style_shell_layout, style_bg_color, style_separation_logic -->
+<header class="flex justify-between items-center w-full px-margin-desktop h-16 sticky top-0 z-40 bg-surface-container-lowest dark:bg-surface-container-lowest border-b border-outline-variant dark:border-outline-variant">
+<div class="flex items-center gap-gutter flex-1">
+<span class="font-headline-md text-headline-md font-bold text-primary">ChemTrade Pro</span>
+<!-- Search Bar Placeholder -->
+<div class="hidden md:flex items-center bg-surface-container-low rounded-lg px-3 py-1.5 w-64 ml-lg border border-transparent focus-within:border-secondary transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md font-body-md w-full placeholder:text-outline" placeholder="Global search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-sm">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-3 cursor-pointer group">
+<div class="text-right">
+<p class="font-body-sm text-body-sm font-semibold leading-tight">Acme Chemicals Ltd.</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Verified Supplier</p>
+</div>
+<img class="w-10 h-10 rounded-full border border-outline-variant object-cover" data-alt="A professional business headshot of a laboratory manager wearing a white lab coat in a modern, clean, brightly lit chemical research facility. The lighting is crisp and cool, reflecting a high-end corporate B2B atmosphere with a soft-focus laboratory equipment background. The aesthetic is clinical, minimalist, and reliable." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGxIXOnqBIKoZglKmluCYYe697e5D-nwr_XGc13fqj0Ggo-uWG1voQMM5TSGfG33WuLs7PplQhuA-lVYPJiOza0T075j3hBpFm9shAT9C8oyH2A1sLexGeyEwO75_j3u-jYHknS6dFXFEksDucZaJRL3jhArWuM5QZE9uud8bD8EeRxxVl3f04YCxCQ5ibk-F6FYDa2JQm9yKVeP40QmERmV3NgmJkyiIY5oiWWnUZiAr8DVPKCuUhHmH2X0MZBibWzgc6B8ptMjn9"/>
+</div>
+</div>
+</header>
+<!-- DASHBOARD BODY -->
+<div class="flex-1 overflow-y-auto p-margin-desktop custom-scrollbar">
+<!-- Page Header Area -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-lg">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-primary">My Chemicals</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage your industrial chemical listings and inventory levels.</p>
+</div>
+<div class="flex items-center gap-sm">
+<div class="bg-surface-container-high px-3 py-1 rounded text-primary font-label-md text-label-md border border-outline-variant">
+                        24 Chemicals
+                    </div>
+<button class="bg-primary text-on-primary font-body-md text-body-md px-lg py-2.5 rounded border border-primary flex items-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                        Add Chemical
+                    </button>
+</div>
+</div>
+<!-- Filters Bar -->
+<div class="bg-surface-container-lowest border border-outline-variant p-sm mb-md flex flex-wrap items-center gap-sm">
+<div class="flex-1 min-w-[240px] relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]" data-icon="filter_list">filter_list</span>
+<input class="w-full pl-10 pr-md py-2 bg-background border border-outline-variant rounded font-body-md text-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20 transition-all" placeholder="Search by name, CAS, or category..." type="text"/>
+</div>
+<select class="bg-background border border-outline-variant rounded font-label-md text-label-md py-2 px-lg focus:border-secondary focus:ring-0">
+<option>All Categories</option>
+<option>Industrial Solvents</option>
+<option>Laboratory Reagents</option>
+<option>Specialty Chemicals</option>
+</select>
+<select class="bg-background border border-outline-variant rounded font-label-md text-label-md py-2 px-lg focus:border-secondary focus:ring-0">
+<option>Status: All</option>
+<option>Active</option>
+<option>Out of Stock</option>
+<option>Pending Review</option>
+</select>
+<button class="p-2 border border-outline-variant rounded hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</button>
+</div>
+<!-- Data Table Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="py-3 px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider w-12">
+<input class="rounded-sm border-outline-variant text-secondary focus:ring-secondary" type="checkbox"/>
+</th>
+<th class="py-3 px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Product</th>
+<th class="py-3 px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">CAS Number</th>
+<th class="py-3 px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Category</th>
+<th class="py-3 px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Stock Level</th>
+<th class="py-3 px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="py-3 px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="py-3 px-md">
+<input class="rounded-sm border-outline-variant text-secondary focus:ring-secondary" type="checkbox"/>
+</td>
+<td class="py-3 px-md">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 bg-surface-container border border-outline-variant overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A macro close-up of pure ethanol in a clear glass chemical beaker, with delicate bubbles and high-clarity liquid. The lighting is bright and industrial, emphasizing purity and transparency. The background is a clean, white laboratory setting with a slight blue tint for a professional, technical aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjSvHX8LgBeSXQgAniKlwd4di9aPB9yGVw83yXXlDdi-yRmR5ey6CQInqsUJPiIsxd9CcGN92-RlAnYP1ES5vjvHPhGGOfQBOZFnklmHYnpDuRaxvZOuBd12cTFZGmW514DWJCfp3rbfF79PmTGnZFH9jhfyqekLaXztq-tpU9FF57myj_cJyGYWItMEg5IpKsG7Rec0-9DM3G4kSOTB0_86hisYph08x_h5nvq5L4HSjjTQ0Zb5l7mdRhlcwU4cjVUXYBHchDS-Sn"/>
+</div>
+<span class="font-body-md text-body-md font-semibold text-primary">Ethanol 99.5%</span>
+</div>
+</td>
+<td class="py-3 px-md">
+<span class="font-label-md text-label-md text-on-surface-variant">64-17-5</span>
+</td>
+<td class="py-3 px-md">
+<span class="px-2 py-0.5 bg-surface-container rounded text-body-sm font-body-sm">Industrial Solvents</span>
+</td>
+<td class="py-3 px-md text-right">
+<span class="font-label-md text-label-md font-bold">5,000 L</span>
+</td>
+<td class="py-3 px-md">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[2px] bg-emerald-50 text-emerald-700 border border-emerald-100 font-label-sm text-label-sm font-bold uppercase">
+                                    Active
+                                </span>
+</td>
+<td class="py-3 px-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-secondary hover:bg-secondary-fixed/30 rounded transition-colors" title="View Analytics">
+<span class="material-symbols-outlined text-[18px]" data-icon="analytics">analytics</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-secondary hover:bg-secondary-fixed/30 rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container/30 rounded transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="py-3 px-md">
+<input class="rounded-sm border-outline-variant text-secondary focus:ring-secondary" type="checkbox"/>
+</td>
+<td class="py-3 px-md">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 bg-surface-container border border-outline-variant overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A focused image of a concentrated sulfuric acid container in an industrial storage environment. The lighting is dramatic and controlled, highlighting the amber-colored safety glass of the bottle and its hazard warning labels. The scene communicates strict safety standards, industrial integrity, and professional chemical management." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKZsy9JgdOwxHjUJZDNS7uhRl7GENMT6dAYb9plMthpJq5lL4IB9248y2v-TTS6nS26xxXLgE4Yd-ILRhSN3KhA2YGyDbXZsl4CSdtycaX6SHQmE1e3FocqNAtai2ZTzNKYyUb1b4GQg1ceueRne0cmxQ15RJSknXX1FAIoXvcOC-hQmmknyK2W8OFNhycp-d8q8YvcI6flpkKW22cNtMuvCdgx3jTzQ5V47ILJkkjI4m_e7LI4_owBWPH75yt0QwRPoUDBSOJ8Ucz"/>
+</div>
+<span class="font-body-md text-body-md font-semibold text-primary">Sulfuric Acid 98%</span>
+</div>
+</td>
+<td class="py-3 px-md">
+<span class="font-label-md text-label-md text-on-surface-variant">7664-93-9</span>
+</td>
+<td class="py-3 px-md">
+<span class="px-2 py-0.5 bg-surface-container rounded text-body-sm font-body-sm">Laboratory Reagents</span>
+</td>
+<td class="py-3 px-md text-right">
+<span class="font-label-md text-label-md font-bold text-error">0 kg</span>
+</td>
+<td class="py-3 px-md">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[2px] bg-red-50 text-red-700 border border-red-100 font-label-sm text-label-sm font-bold uppercase">
+                                    Out of Stock
+                                </span>
+</td>
+<td class="py-3 px-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-secondary hover:bg-secondary-fixed/30 rounded transition-colors" title="View Analytics">
+<span class="material-symbols-outlined text-[18px]" data-icon="analytics">analytics</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-secondary hover:bg-secondary-fixed/30 rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container/30 rounded transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="py-3 px-md">
+<input class="rounded-sm border-outline-variant text-secondary focus:ring-secondary" type="checkbox"/>
+</td>
+<td class="py-3 px-md">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 bg-surface-container border border-outline-variant overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Technical photography of high-grade Acetone in a professional solvent dispenser. The fluid is clear, captured with high-speed photography to show its light viscosity. The background shows a modern chemical processing unit with brushed steel pipes and digital pressure gauges, using a cool-toned, high-utility industrial palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoEQptQ_pqp6OtXyXk8N5VZLSlLyN9L382c_QnLDtk4YqccIumnZqdxOTLhN83RjE6dlPtsyUZk3jFHyf18WFe8R2mJ8t_xM40FWYyDV-gIvZ5bfDcIzyEh5Exi4X0rsMQeYC8IPKdvJqHpCy1rH9tREL36w5k-id8FoZOn7e0RcWdSX_iwygwpd30N9al6jHhHGcum3eydnf5rObhqFV4Y9_HxN0lU8wvbySRE9BI7kwazaXvF-ooxmGlE1VX42C-J6Wj5jSViEwb"/>
+</div>
+<span class="font-body-md text-body-md font-semibold text-primary">Acetone (ACS Grade)</span>
+</div>
+</td>
+<td class="py-3 px-md">
+<span class="font-label-md text-label-md text-on-surface-variant">67-64-1</span>
+</td>
+<td class="py-3 px-md">
+<span class="px-2 py-0.5 bg-surface-container rounded text-body-sm font-body-sm">Industrial Solvents</span>
+</td>
+<td class="py-3 px-md text-right">
+<span class="font-label-md text-label-md font-bold">1,250 L</span>
+</td>
+<td class="py-3 px-md">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[2px] bg-amber-50 text-amber-700 border border-amber-100 font-label-sm text-label-sm font-bold uppercase">
+                                    Pending Review
+                                </span>
+</td>
+<td class="py-3 px-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-secondary hover:bg-secondary-fixed/30 rounded transition-colors" title="View Analytics">
+<span class="material-symbols-outlined text-[18px]" data-icon="analytics">analytics</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-secondary hover:bg-secondary-fixed/30 rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container/30 rounded transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="py-3 px-md">
+<input class="rounded-sm border-outline-variant text-secondary focus:ring-secondary" type="checkbox"/>
+</td>
+<td class="py-3 px-md">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 bg-surface-container border border-outline-variant overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="High-resolution image of Sodium Hydroxide pellets (lye) in a professional industrial container. The white, bead-like pellets are sharply defined against a dark, contrasting background. The lighting is surgical and precise, emphasizing the crystalline structure and uniform quality of the reagent in a laboratory supply context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXiHabAKBTgZsuQOdVsg4zugwHjhFsSFml1d4BqQCfe5dYEaRQtfNeYs9UqACdPEqbHVwP2OXIHDOB0GXceqbmt_6TZ0Ms2d_1CzEYY5B5YGBFhjnXiJ_Rs8Swqr1ew8sOqgYIkkVw7inxvdOjfj_qdozIMbrlj0SmFhhCUmjgEdko7xY81vykoFAKMO4SK65d9QKIAWyMdBKCP2xyjQQ44Jv3bODdgCSHG38h0GgOYSB5SOVUvKQ4LBhT0OW_-nB1I1Y4ekfyKPTL"/>
+</div>
+<span class="font-body-md text-body-md font-semibold text-primary">Sodium Hydroxide Pellets</span>
+</div>
+</td>
+<td class="py-3 px-md">
+<span class="font-label-md text-label-md text-on-surface-variant">1310-73-2</span>
+</td>
+<td class="py-3 px-md">
+<span class="px-2 py-0.5 bg-surface-container rounded text-body-sm font-body-sm">Laboratory Reagents</span>
+</td>
+<td class="py-3 px-md text-right">
+<span class="font-label-md text-label-md font-bold">450 kg</span>
+</td>
+<td class="py-3 px-md">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[2px] bg-emerald-50 text-emerald-700 border border-emerald-100 font-label-sm text-label-sm font-bold uppercase">
+                                    Active
+                                </span>
+</td>
+<td class="py-3 px-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-secondary hover:bg-secondary-fixed/30 rounded transition-colors" title="View Analytics">
+<span class="material-symbols-outlined text-[18px]" data-icon="analytics">analytics</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-secondary hover:bg-secondary-fixed/30 rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container/30 rounded transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination Footer -->
+<div class="bg-surface-container-low px-md py-3 flex items-center justify-between border-t border-outline-variant">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Showing 1 to 4 of 24 listings</span>
+<div class="flex items-center gap-1">
+<button class="p-1 px-2 border border-outline-variant rounded bg-surface-container-lowest text-on-surface-variant opacity-50 cursor-not-allowed">
+<span class="material-symbols-outlined text-[18px]" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="p-1 px-3 border border-secondary rounded bg-secondary-fixed text-secondary font-label-sm text-label-sm font-bold">1</button>
+<button class="p-1 px-3 border border-outline-variant rounded bg-surface-container-lowest font-label-sm text-label-sm hover:bg-surface-container transition-colors">2</button>
+<button class="p-1 px-3 border border-outline-variant rounded bg-surface-container-lowest font-label-sm text-label-sm hover:bg-surface-container transition-colors">3</button>
+<button class="p-1 px-2 border border-outline-variant rounded bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Stats Overview (Asymmetric Detail) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg mt-lg">
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-lg">
+<div class="flex items-center justify-between mb-2">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase">Inventory Value</p>
+<span class="material-symbols-outlined text-secondary" data-icon="payments">payments</span>
+</div>
+<p class="font-headline-lg text-headline-lg text-primary">$184,200.00</p>
+<p class="font-body-sm text-body-sm text-emerald-600 mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span>
+                        +12.4% from last month
+                    </p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-lg">
+<div class="flex items-center justify-between mb-2">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase">Active Requests</p>
+<span class="material-symbols-outlined text-secondary" data-icon="shopping_cart">shopping_cart</span>
+</div>
+<p class="font-headline-lg text-headline-lg text-primary">18</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2">6 requiring immediate action</p>
+</div>
+<div class="bg-secondary text-on-secondary p-lg rounded-lg relative overflow-hidden flex flex-col justify-between">
+<div class="relative z-10">
+<p class="font-label-md text-label-md uppercase opacity-80">Compliance Score</p>
+<p class="font-headline-lg text-headline-lg">98%</p>
+</div>
+<div class="relative z-10 mt-4">
+<button class="bg-on-secondary text-secondary font-label-md text-label-md px-md py-1.5 rounded-full">Check Compliance</button>
+</div>
+<!-- Subtle background pattern -->
+<div class="absolute right-[-20px] top-[-20px] opacity-10">
+<span class="material-symbols-outlined text-[120px]" data-icon="verified">verified</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple micro-interactions for checkboxes and rows
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('click', (e) => {
+                if(e.target.type !== 'checkbox' && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'SPAN') {
+                    const cb = row.querySelector('input[type="checkbox"]');
+                    if(cb) cb.checked = !cb.checked;
+                }
+            });
+        });
+
+        // Search highlight simulation
+        const searchInput = document.querySelector('input[placeholder="Search by name, CAS, or category..."]');
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('tbody tr').forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.opacity = text.includes(term) ? '1' : '0.4';
+                row.style.display = text.includes(term) ? '' : 'none';
+            });
+        });
+    </script>
+</body></html>

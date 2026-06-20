@@ -13,11 +13,11 @@ const navLinks = [
   { label: "Logistics", href: "/dashboard" },
 ] as const;
 
-export function Navbar() {
+export function Navbar({ id }: { id?: string }) {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky top-0 z-50 bg-surface border-b border-outline-variant w-full">
+    <nav id={id} className="sticky top-0 z-50 bg-surface border-b border-outline-variant w-full">
       <div className="flex justify-between items-center h-16 px-4 md:px-8 max-w-[1440px] mx-auto">
         {/* Logo + Nav Links */}
         <div className="flex items-center gap-10">

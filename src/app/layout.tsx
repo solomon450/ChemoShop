@@ -36,10 +36,10 @@ export default function RootLayout({
       >
         <QueryProvider>
           <div className="min-h-screen flex flex-col">
-            <Navbar />
+            <Navbar id="main-navbar" />
             <main className="flex-1">{children}</main>
             {/* Footer */}
-            <footer className="bg-surface-container-lowest border-t border-outline-variant w-full mt-auto">
+            <footer id="main-footer" className="bg-surface-container-lowest border-t border-outline-variant w-full mt-auto">
               <div className="flex flex-col md:flex-row justify-between items-center py-6 px-4 md:px-8 max-w-[1440px] mx-auto gap-6">
                 <div className="flex flex-col gap-2">
                   <span className="font-mono text-label-md font-bold text-on-surface">
