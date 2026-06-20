@@ -75,10 +75,7 @@ export default function DashboardLayout({
         {/* Main Tabs */}
         <nav className="flex-1 px-2 space-y-1">
           {sideNavItems.map((item) => {
-            const isActive =
-              item.href === "/dashboard"
-                ? pathname === "/dashboard"
-                : pathname.startsWith(item.href);
+            const isActive = pathname === item.href;
             const IconComp = item.icon;
             return (
               <Link
