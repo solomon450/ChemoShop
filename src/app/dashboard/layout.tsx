@@ -13,20 +13,10 @@ import {
   FlaskConical,
   CirclePlus,
   Receipt,
-  Search,
   Bell,
   HelpCircle,
   Settings,
-  Download,
-  Info,
-  Factory,
-  Truck,
-  FileText,
-  Upload,
-  FileCheck,
-  ShieldCheck,
-  ClipboardCheck,
-  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 
 const sideNavItems = [
@@ -41,12 +31,21 @@ const footerNavItems = [
   { label: "Support", icon: HelpCircle, href: "#" },
 ];
 
+/* Derive page title from pathname */
+function getPageTitle(pathname: string): string {
+  if (pathname === "/dashboard") return "Dashboard";
+  if (pathname === "/dashboard/chemicals") return "My Chemicals";
+  if (pathname === "/dashboard/chemicals/new") return "Add Chemical";
+  return "Dashboard";
+}
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const pageTitle = getPageTitle(pathname);
 
   // Hide the root marketing Navbar when inside dashboard
   useEffect(() => {
@@ -82,10 +81,10 @@ export default function DashboardLayout({
                 key={item.href + item.label}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3 transition-colors active:scale-95",
+                  "flex items-center gap-3 px-4 py-3 transition-all duration-200 ease-in-out active:scale-95",
                   isActive
                     ? "bg-secondary-container text-on-secondary-container font-semibold rounded-lg"
-                    : "text-on-surface-variant hover:bg-surface-container-high"
+                    : "text-on-surface-variant hover:bg-surface-container-high transition-colors"
                 )}
               >
                 <IconComp className="h-5 w-5" />
@@ -97,7 +96,7 @@ export default function DashboardLayout({
 
         {/* CTA + Footer */}
         <div className="px-2 pt-4 mt-auto border-t border-outline-variant">
-          <button className="w-full mb-4 py-2 px-4 bg-primary text-on-primary font-semibold text-sm rounded-lg hover:opacity-90 transition-opacity">
+          <button className="w-full mb-4 mx-2 py-2 px-4 bg-primary text-on-primary rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity">
             Export Data
           </button>
           {footerNavItems.map((item) => {
@@ -106,7 +105,7 @@ export default function DashboardLayout({
               <Link
                 key={item.label}
                 href={item.href}
-                className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95"
+                className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors"
               >
                 <IconComp className="h-5 w-5" />
                 <span className="text-body-md">{item.label}</span>
@@ -117,40 +116,42 @@ export default function DashboardLayout({
       </aside>
 
       {/* ── Top Navigation Bar ── */}
-      <header className="fixed top-0 right-0 left-64 h-16 bg-surface-bright border-b border-outline-variant flex items-center justify-between px-10 z-40">
-        <div className="flex items-center w-1/3">
-          <div className="relative w-full max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant h-5 w-5" />
-            <input
-              className="w-full pl-10 pr-4 py-1.5 bg-surface-container-low border border-outline-variant rounded text-sm focus:border-secondary focus:outline-none"
-              placeholder="Search orders or products..."
-              type="text"
-            />
-          </div>
-        </div>
+      <header className="fixed top-0 right-0 left-64 h-16 bg-surface-bright border-b border-outline-variant flex items-center justify-between px-6 z-40">
+        {/* Left: Page title */}
         <div className="flex items-center gap-4">
-          <button className="p-2 text-on-surface-variant hover:text-secondary active:opacity-80 transition-colors">
-            <Bell className="h-5 w-5" />
-          </button>
-          <button className="p-2 text-on-surface-variant hover:text-secondary active:opacity-80 transition-colors">
-            <HelpCircle className="h-5 w-5" />
-          </button>
-          <div className="h-8 w-8 rounded-full overflow-hidden border border-outline-variant ml-2">
+          <h2 className="text-headline-md font-bold text-primary">{pageTitle}</h2>
+        </div>
+        {/* Right: Notifications + User */}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 text-on-surface-variant">
+            <button className="cursor-pointer hover:text-secondary transition-colors">
+              <Bell className="h-5 w-5" />
+            </button>
+            <button className="cursor-pointer hover:text-secondary transition-colors">
+              <HelpCircle className="h-5 w-5" />
+            </button>
+          </div>
+          <div className="h-8 w-px bg-outline-variant" />
+          <div className="flex items-center gap-4 cursor-pointer active:opacity-80">
+            <div className="text-right">
+              <p className="text-label-md font-bold text-primary">Global Chem Ltd.</p>
+              <p className="text-[10px] uppercase tracking-wider text-on-surface-variant">
+                Supplier Tier 1
+              </p>
+            </div>
             <Image
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVLtwvPda-cf5I4JX6GSpBqZDs13kwL5i2SYLyc-YYpuZ6CilKtO8EG2JnZvJGR6ierh26eArnQtuYJVHNPj_-10pyD7bSQl0gAqQud_4kLONoctUeS9lGbddSHJLgNbcpkrt2GNwFSBc0JKswVYKL1IJUiGyqVk04XFLgZtHE5fhjAE9hpGSUe2zreRLjoZ-t0cPwwG2YBQaMujQ7IE3hy2fNWes4EKgrVgPUhWELkyXFNBVZaj6n_DzCConM2kV8Cm0Kp3SVZoqv"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHnJlmBdtMRBzwHdV5VtJppkgg2Bp9KhKgvGbOldGyajG0Iq5EXVGDGCD1NiEIJrjxVbXBFcfTbV0EMIJwxP9umrjovUxoBH8X-OLmfKfxF9L6AuD5hMceLQUdazq_Ni1GG8FZA12XhVWM0xqKMyYRhksX7lJDjzd7LjJm6x7C3_dn5Rk_-N8OjZsP7X0L86rZ1mTyTf7RVCEzEabOuHm8a3sJVzB-axyA57nYkiKuwhuU410rr8vbCrqFpJuYEk-o_2R8VUg_f1Zl"
               alt="User avatar"
-              width={32}
-              height={32}
-              className="w-full h-full object-cover"
+              width={40}
+              height={40}
+              className="w-10 h-10 rounded-full border border-outline-variant object-cover"
             />
           </div>
         </div>
       </header>
 
       {/* ── Main Content Canvas ── */}
-      <main className="pl-64 pt-16 min-h-screen">
-        {children}
-      </main>
+      <main className="ml-64 min-h-screen">{children}</main>
     </div>
   );
 }
