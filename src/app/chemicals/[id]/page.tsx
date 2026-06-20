@@ -3,9 +3,8 @@
 // Chemical Detail page — exact conversion of ChemTrade Pro product detail
 // Data-driven: uses useParams to find chemical from mock data by ID
 
-import { useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   ChevronRight,
@@ -18,8 +17,6 @@ import {
   FileText,
   Download,
   AlertTriangle,
-  CheckCircle,
-  Loader2,
 } from "lucide-react";
 import { chemicals, getChemicalById } from "@/lib/mock-data";
 
@@ -30,13 +27,14 @@ export default function ChemicalDetailPage() {
   const id = params.id as string;
   const chem = getChemicalById(id);
 
-  const [quoteStatus, setQuoteStatus] = useState<
-    "idle" | "processing" | "sent"
-  >("idle");
+  const router = useRouter();
 
   const handleRequestQuote = () => {
-    setQuoteStatus("processing");
-    setTimeout(() => setQuoteStatus("sent"), 1200);
+    router.push("/rfq");
+  };
+
+  const handleSampleRequest = () => {
+    router.push("/rfq");
   };
 
   // 404 state
@@ -192,31 +190,15 @@ export default function ChemicalDetailPage() {
             </div>
             <div className="space-y-2">
               <button
-                className={`w-full py-4 rounded font-mono text-label-md font-bold uppercase tracking-wide transition-all ${
-                  quoteStatus === "sent"
-                    ? "bg-green-600 text-white"
-                    : quoteStatus === "processing"
-                      ? "bg-secondary text-white opacity-80"
-                      : "bg-secondary text-white hover:opacity-90 active:scale-[0.99]"
-                }`}
+                className="w-full py-4 rounded font-mono text-label-md font-bold uppercase tracking-wide transition-all bg-secondary text-white hover:opacity-90 active:scale-[0.99]"
                 onClick={handleRequestQuote}
-                disabled={quoteStatus !== "idle"}
               >
-                {quoteStatus === "idle" && "Request Quote"}
-                {quoteStatus === "processing" && (
-                  <span className="flex items-center justify-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Processing...
-                  </span>
-                )}
-                {quoteStatus === "sent" && (
-                  <span className="flex items-center justify-center gap-2">
-                    <CheckCircle className="h-4 w-4" />
-                    Quote Sent
-                  </span>
-                )}
+                Request Quote
               </button>
-              <button className="w-full bg-white border border-secondary text-secondary py-4 rounded font-mono text-label-md font-bold uppercase tracking-wide hover:bg-surface-container-low transition-all">
+              <button
+                className="w-full bg-white border border-secondary text-secondary py-4 rounded font-mono text-label-md font-bold uppercase tracking-wide hover:bg-surface-container-low transition-all"
+                onClick={handleSampleRequest}
+              >
                 Sample Request
               </button>
             </div>

@@ -3,7 +3,7 @@
 // Home page — exact conversion of ChemTrade Pro landing page
 // Trending chemicals data-driven from mock data, cards link to /chemicals/[id]
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -95,6 +95,34 @@ const trendingChemicals = [...chemicals]
 
 export default function Home() {
   const [searchFocused, setSearchFocused] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Filter chemicals by search query (match name, CAS, formula, category)
+  const searchResults = searchQuery.trim()
+    ? chemicals.filter(
+        (c) =>
+          c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.cas.includes(searchQuery) ||
+          c.formula.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.category.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -105,7 +133,7 @@ export default function Home() {
           <h1 className="text-headline-xl text-primary mb-6 max-w-3xl">
             Connecting global manufacturers with verified suppliers.
           </h1>
-          <div className="w-full max-w-2xl mt-6">
+          <div className="w-full max-w-2xl mt-6" ref={dropdownRef}>
             <div
               className={`relative group transition-shadow ${
                 searchFocused ? "shadow-sm" : ""
@@ -118,9 +146,83 @@ export default function Home() {
                 className="w-full h-14 pl-12 pr-4 bg-surface border border-outline-variant rounded focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all text-body-lg"
                 placeholder="Search chemicals (e.g., Ethanol, Sulfuric Acid)"
                 type="text"
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowDropdown(true);
+                }}
+                onFocus={() => {
+                  setSearchFocused(true);
+                  if (searchQuery.trim()) setShowDropdown(true);
+                }}
+                onBlur={() => {
+                  setSearchFocused(false);
+                  // Delay to allow link click
+                  setTimeout(() => setShowDropdown(false), 200);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setShowDropdown(false);
+                }}
               />
+
+              {/* Search Results Dropdown */}
+              {showDropdown && searchResults.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-surface-container-lowest border border-outline-variant rounded shadow-lg z-50 max-h-[400px] overflow-y-auto">
+                  <div className="p-3 border-b border-outline-variant">
+                    <span className="font-mono text-label-sm text-on-surface-variant uppercase">
+                      {searchResults.length} Result{searchResults.length !== 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  {searchResults.map((chem) => (
+                    <Link
+                      key={chem.id}
+                      href={`/chemicals/${chem.id}`}
+                      className="flex items-center gap-4 px-4 py-3 hover:bg-surface-container-high transition-colors border-b border-outline-variant/30 last:border-b-0"
+                      onMouseDown={() => setShowDropdown(false)}
+                    >
+                      <div className="w-10 h-10 border border-outline-variant rounded bg-surface shrink-0 overflow-hidden">
+                        <Image
+                          src={chem.image}
+                          alt={chem.name}
+                          width={40}
+                          height={40}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-primary text-body-md truncate">
+                          {chem.name}
+                        </p>
+                        <p className="text-body-sm text-on-surface-variant truncate">
+                          {chem.casDisplay} &middot; {chem.category}
+                        </p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="font-mono text-label-md text-secondary font-bold">
+                          {chem.price}
+                        </p>
+                        <p className="text-[10px] text-on-surface-variant">
+                          {chem.supplier.name}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+              {/* No Results */}
+              {showDropdown && searchQuery.trim() && searchResults.length === 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-surface-container-lowest border border-outline-variant rounded shadow-lg z-50 p-6 text-center">
+                  <p className="text-on-surface-variant text-body-md">No chemicals found for &lsquo;{searchQuery}&rsquo;</p>
+                  <Link
+                    href="/chemicals"
+                    className="text-secondary text-body-sm font-semibold hover:underline mt-1 inline-block"
+                    onMouseDown={() => setShowDropdown(false)}
+                  >
+                    Browse full catalog
+                  </Link>
+                </div>
+              )}
             </div>
             <div className="flex flex-wrap justify-center gap-4 mt-6">
               <span className="text-on-surface-variant text-label-sm uppercase tracking-wider">
