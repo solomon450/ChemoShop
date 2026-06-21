@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Navbar } from "@/components/layout/Navbar";
 import { QueryProvider } from "@/components/providers/QueryProvider";
+import { CartProvider } from "@/components/providers/CartProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -35,6 +36,7 @@ export default function RootLayout({
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans text-body-md antialiased selection:bg-secondary selection:text-primary-foreground`}
       >
         <QueryProvider>
+          <CartProvider>
           <div className="min-h-screen flex flex-col">
             <Navbar id="main-navbar" />
             <main className="flex-1">{children}</main>
@@ -98,6 +100,7 @@ export default function RootLayout({
               </div>
             </footer>
           </div>
+          </CartProvider>
         </QueryProvider>
         <Toaster />
       </body>
