@@ -138,7 +138,7 @@ export default function Home() {
         <div className="absolute inset-0 subtle-industrial-bg opacity-30" />
         <div className="relative z-10 max-w-[1440px] mx-auto px-4 md:px-8 flex flex-col items-center text-center">
           <h1 className="text-headline-xl text-primary mb-6 max-w-3xl">
-            Connecting global manufacturers with verified suppliers.
+            Connecting Ethiopian manufacturers with verified suppliers.
           </h1>
           <div className="w-full max-w-2xl mt-6" ref={dropdownRef}>
             <div

@@ -67,7 +67,7 @@ export default function DashboardLayout({
         {/* Brand Header */}
         <div className="px-4 mb-10">
           <h1 className="text-headline-md font-bold text-primary">
-            ChemTrade Pro
+            Selihom Gebeya
           </h1>
           <p className="text-on-surface-variant text-body-sm">Supplier Portal</p>
         </div>
