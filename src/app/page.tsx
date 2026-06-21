@@ -280,9 +280,10 @@ export default function Home() {
           {categories.map((cat) => {
             const IconComp = cat.icon;
             return (
-              <div
+              <Link
                 key={cat.title}
-                className="group bg-surface-container-lowest border border-outline-variant p-6 hover:border-secondary transition-all cursor-pointer"
+                href={`/chemicals?category=${encodeURIComponent(cat.title)}`}
+                className="group bg-surface-container-lowest border border-outline-variant p-6 hover:border-secondary transition-all cursor-pointer block"
               >
                 <div className="flex justify-between items-start mb-6">
                   <IconComp className="text-secondary h-10 w-10" />
@@ -294,7 +295,7 @@ export default function Home() {
                 <p className="text-on-surface-variant text-body-md">
                   {cat.description}
                 </p>
-              </div>
+              </Link>
             );
           })}
         </div>

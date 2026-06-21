@@ -5,6 +5,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import {
   ChevronRight,
@@ -26,8 +27,15 @@ const allLocations = Array.from(new Set(chemicals.map((c) => c.supplier.location
 /* ─────────────────── COMPONENT ─────────────────── */
 
 export default function ChemicalsPage() {
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams.get("category");
+
   const [sortBy, setSortBy] = useState("Relevance");
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(allCategories);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    categoryParam && allCategories.includes(categoryParam)
+      ? [categoryParam]
+      : allCategories
+  );
   const [selectedPurities, setSelectedPurities] = useState<string[]>([]);
   const [selectedLocation, setSelectedLocation] = useState("Global");
   const [priceMin, setPriceMin] = useState("");
@@ -152,7 +160,9 @@ export default function ChemicalsPage() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
         <div>
           <h1 className="text-headline-lg text-on-surface">
-            Results for &lsquo;Solvents&rsquo;
+            {categoryParam && allCategories.includes(categoryParam)
+              ? categoryParam
+              : "All Chemicals"}
           </h1>
           <p className="text-on-surface-variant mt-1 text-body-md">
             {filteredChemicals.length} verified chemical listing{filteredChemicals.length !== 1 ? "s" : ""} found matching your
