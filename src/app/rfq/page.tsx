@@ -1,6 +1,7 @@
 "use client";
 
-// RFQ (Request for Quote) page — exact conversion of Selihom Gebeya RFQ form
+// RFQ (Request for Quote) page — uses cart items from CartProvider
+// "Add More Chemicals" navigates to /chemicals page
 
 import { useState } from "react";
 import Link from "next/link";
@@ -12,25 +13,19 @@ import {
   Mail,
   CheckCircle,
   Loader2,
+  ShoppingCart,
 } from "lucide-react";
+import { useCart } from "@/components/providers/CartProvider";
 
 /* ─────────────────── DATA ─────────────────── */
 
-const selectedChemicals = [
-  {
-    name: "Ethanol 99.5%",
-    cas: "CAS: 64-17-5",
-    quantity: 500,
-    unitOptions: ["Liters", "Kilograms", "Drums (200L)"],
-    defaultUnit: "Liters",
-  },
-  {
-    name: "Sulfuric Acid",
-    cas: "CAS: 7664-93-9",
-    quantity: 10,
-    unitOptions: ["Tons", "IBC Totes", "Drums"],
-    defaultUnit: "Tons",
-  },
+const unitOptions = [
+  "Liters",
+  "Kilograms",
+  "Tons",
+  "IBC Totes",
+  "Drums (200L)",
+  "Drums",
 ];
 
 const incoterms = [
@@ -46,6 +41,37 @@ export default function RFQPage() {
   const [sendStatus, setSendStatus] = useState<
     "idle" | "sending" | "sent"
   >("idle");
+
+  const { items, removeItem, clearCart } = useCart();
+
+  // Local quantity + unit state per chemical (editable in the RFQ table)
+  const [rfqQuantities, setRfqQuantities] = useState<
+    Record<string, number>
+  >(() => {
+    const map: Record<string, number> = {};
+    items.forEach((item) => {
+      map[item.chemical.id] = item.quantity;
+    });
+    return map;
+  });
+
+  const [rfqUnits, setRfqUnits] = useState<Record<string, string>>(() => {
+    const map: Record<string, string> = {};
+    items.forEach((item) => {
+      // Pick a sensible default unit based on the chemical's unit
+      const unit = item.chemical.unit.toLowerCase();
+      if (unit.includes("l") || unit.includes("liter")) {
+        map[item.chemical.id] = "Liters";
+      } else if (unit.includes("kg") || unit.includes("kilo")) {
+        map[item.chemical.id] = "Kilograms";
+      } else if (unit.includes("ton")) {
+        map[item.chemical.id] = "Tons";
+      } else {
+        map[item.chemical.id] = "Liters";
+      }
+    });
+    return map;
+  });
 
   const handleSend = () => {
     setSendStatus("sending");
@@ -76,66 +102,121 @@ export default function RFQPage() {
               Selected Chemicals
             </h2>
             <span className="font-mono text-label-sm text-on-surface-variant uppercase tracking-wider">
-              {selectedChemicals.length} Items
+              {items.length} Item{items.length !== 1 ? "s" : ""}
             </span>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-surface-container-low border-b border-outline-variant">
-                  <th className="px-6 py-2 font-mono text-label-sm text-on-surface-variant uppercase">
-                    Chemical / CAS
-                  </th>
-                  <th className="px-6 py-2 font-mono text-label-sm text-on-surface-variant uppercase w-48">
-                    Quantity
-                  </th>
-                  <th className="px-6 py-2 font-mono text-label-sm text-on-surface-variant uppercase w-16" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline-variant">
-                {selectedChemicals.map((chem) => (
-                  <tr
-                    key={chem.name}
-                    className="hover:bg-surface-container-lowest transition-colors"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="text-body-md font-semibold text-on-surface">
-                        {chem.name}
-                      </div>
-                      <div className="font-mono text-label-sm text-on-surface-variant">
-                        {chem.cas}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-1">
-                        <input
-                          className="w-20 border border-outline-variant rounded px-2 py-1 text-body-md focus:border-secondary focus:ring-0 outline-none transition-colors"
-                          type="number"
-                          defaultValue={chem.quantity}
-                        />
-                        <select className="border border-outline-variant rounded px-2 py-1 text-body-md bg-transparent focus:border-secondary focus:ring-0 outline-none transition-colors">
-                          {chem.unitOptions.map((unit) => (
-                            <option key={unit}>{unit}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <button className="text-destructive hover:bg-error-container p-1 rounded transition-colors">
-                        <Trash2 className="h-5 w-5" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="p-6 bg-surface-container-lowest border-t border-outline-variant">
-            <button className="flex items-center gap-1 text-secondary font-semibold hover:underline">
-              <Plus className="h-[18px] w-[18px]" />
-              <span>Add More Chemicals</span>
-            </button>
-          </div>
+
+          {items.length > 0 ? (
+            <>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-surface-container-low border-b border-outline-variant">
+                      <th className="px-6 py-2 font-mono text-label-sm text-on-surface-variant uppercase">
+                        Chemical / CAS
+                      </th>
+                      <th className="px-6 py-2 font-mono text-label-sm text-on-surface-variant uppercase w-56">
+                        Quantity
+                      </th>
+                      <th className="px-6 py-2 font-mono text-label-sm text-on-surface-variant uppercase w-16" />
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-outline-variant">
+                    {items.map((item) => (
+                      <tr
+                        key={item.chemical.id}
+                        className="hover:bg-surface-container-lowest transition-colors"
+                      >
+                        <td className="px-6 py-4">
+                          <div className="text-body-md font-semibold text-on-surface">
+                            {item.chemical.name}
+                          </div>
+                          <div className="font-mono text-label-sm text-on-surface-variant">
+                            {item.chemical.casDisplay}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-1">
+                            <input
+                              className="w-20 border border-outline-variant rounded px-2 py-1 text-body-md focus:border-secondary focus:ring-0 outline-none transition-colors"
+                              type="number"
+                              min={1}
+                              value={rfqQuantities[item.chemical.id] || ""}
+                              onChange={(e) =>
+                                setRfqQuantities((prev) => ({
+                                  ...prev,
+                                  [item.chemical.id]: Math.max(
+                                    1,
+                                    parseInt(e.target.value) || 1
+                                  ),
+                                }))
+                              }
+                            />
+                            <select
+                              className="border border-outline-variant rounded px-2 py-1 text-body-md bg-transparent focus:border-secondary focus:ring-0 outline-none transition-colors"
+                              value={
+                                rfqUnits[item.chemical.id] || "Liters"
+                              }
+                              onChange={(e) =>
+                                setRfqUnits((prev) => ({
+                                  ...prev,
+                                  [item.chemical.id]: e.target.value,
+                                }))
+                              }
+                            >
+                              {unitOptions.map((unit) => (
+                                <option key={unit}>{unit}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <button
+                            onClick={() => removeItem(item.chemical.id)}
+                            className="text-destructive hover:bg-error-container p-1 rounded transition-colors"
+                          >
+                            <Trash2 className="h-5 w-5" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="p-6 bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between">
+                <Link
+                  href="/chemicals"
+                  className="flex items-center gap-1 text-secondary font-semibold hover:underline"
+                >
+                  <Plus className="h-[18px] w-[18px]" />
+                  <span>Add More Chemicals</span>
+                </Link>
+                <button
+                  onClick={clearCart}
+                  className="text-red-500 text-body-sm font-medium hover:underline"
+                >
+                  Clear All
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="py-16 flex flex-col items-center text-center px-6">
+              <ShoppingCart className="h-10 w-10 text-outline-variant mb-3" />
+              <p className="text-on-surface-variant text-body-md">
+                No chemicals selected yet.
+              </p>
+              <p className="text-on-surface-variant text-body-sm mt-1 mb-4">
+                Browse the marketplace and add chemicals to your RFQ.
+              </p>
+              <Link
+                href="/chemicals"
+                className="flex items-center gap-1 text-secondary font-semibold hover:underline"
+              >
+                <Plus className="h-[18px] w-[18px]" />
+                <span>Browse Chemicals</span>
+              </Link>
+            </div>
+          )}
         </section>
 
         {/* ── Two-column layout ── */}

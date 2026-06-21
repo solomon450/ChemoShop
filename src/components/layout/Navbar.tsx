@@ -5,7 +5,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { Bell, ShoppingCart, X, Trash2, ArrowRight } from "lucide-react";
+import { Bell, ShoppingCart, X, Trash2, ArrowRight, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import { useCart } from "@/components/providers/CartProvider";
 
@@ -19,7 +19,7 @@ const navLinks = [
 export function Navbar({ id }: { id?: string }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { itemCount, items, isCartOpen, setIsCartOpen, removeItem, clearCart } =
+  const { itemCount, items, isCartOpen, setIsCartOpen, removeItem, updateQuantity, clearCart } =
     useCart();
 
   return (
@@ -134,15 +134,34 @@ export function Navbar({ id }: { id?: string }) {
                         <p className="text-body-sm text-on-surface-variant truncate">
                           {item.chemical.casDisplay} &middot; {item.chemical.purity}
                         </p>
-                        <div className="flex items-center justify-between mt-1">
+                      <div className="flex items-center justify-between mt-2">
                           <p className="font-mono text-label-md text-secondary font-bold">
                             {item.chemical.price === "Request Quote"
                               ? "Quote"
                               : `${item.chemical.price}/${item.chemical.unit}`}
                           </p>
                           <div className="flex items-center gap-2">
-                            <span className="bg-surface-container-high text-label-sm px-2 py-0.5 rounded font-medium">
-                              Qty: {item.quantity}
+                            {/* Quantity controls */}
+                            <div className="flex items-center border border-outline-variant rounded">
+                              <button
+                                onClick={() => updateQuantity(item.chemical.id, item.quantity - 1)}
+                                disabled={item.quantity <= 1}
+                                className="w-7 h-7 flex items-center justify-center hover:bg-surface-container-high disabled:opacity-30 transition-colors rounded-l"
+                              >
+                                <Minus className="h-3 w-3" />
+                              </button>
+                              <div className="w-10 h-7 flex items-center justify-center border-x border-outline-variant text-label-md font-medium">
+                                {item.quantity}
+                              </div>
+                              <button
+                                onClick={() => updateQuantity(item.chemical.id, item.quantity + 1)}
+                                className="w-7 h-7 flex items-center justify-center hover:bg-surface-container-high transition-colors rounded-r"
+                              >
+                                <Plus className="h-3 w-3" />
+                              </button>
+                            </div>
+                            <span className="text-[11px] text-on-surface-variant font-mono uppercase">
+                              {item.chemical.unit}
                             </span>
                             <button
                               onClick={() => removeItem(item.chemical.id)}

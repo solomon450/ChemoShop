@@ -21,6 +21,7 @@ interface CartContextType {
   items: CartItem[];
   addItem: (chemical: MockChemical) => void;
   removeItem: (chemicalId: string) => void;
+  updateQuantity: (chemicalId: string, quantity: number) => void;
   clearCart: () => void;
   itemCount: number;
   isCartOpen: boolean;
@@ -51,6 +52,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((prev) => prev.filter((item) => item.chemical.id !== chemicalId));
   }, []);
 
+  const updateQuantity = useCallback((chemicalId: string, quantity: number) => {
+    if (quantity < 1) return;
+    setItems((prev) =>
+      prev.map((item) =>
+        item.chemical.id === chemicalId ? { ...item, quantity } : item
+      )
+    );
+  }, []);
+
   const clearCart = useCallback(() => {
     setItems([]);
   }, []);
@@ -63,6 +73,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         items,
         addItem,
         removeItem,
+        updateQuantity,
         clearCart,
         itemCount,
         isCartOpen,
