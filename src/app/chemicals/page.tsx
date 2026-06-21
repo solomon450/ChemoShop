@@ -1,7 +1,7 @@
 "use client";
 
-// Chemicals / Marketplace page — functional filters + cart integration
-// Filters: category, purity, location, price range — all driven by state
+// Chemicals / Marketplace page — exact conversion of Selihom Gebeya search results
+// Data-driven: uses mock data, rows link to /chemicals/[id]
 
 import { useState, useMemo } from "react";
 import Link from "next/link";

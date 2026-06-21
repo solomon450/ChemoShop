@@ -1,7 +1,7 @@
 "use client";
 
 // Dashboard Layout — Supplier Portal with side nav, top bar, and scrollable body
-// Pixel-perfect match of the ChemTrade Pro dashboard HTML template
+// Pixel-perfect match of the Selihom Gebeya dashboard HTML template
 
 import { useEffect } from "react";
 import Link from "next/link";

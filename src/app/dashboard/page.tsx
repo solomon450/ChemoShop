@@ -1,6 +1,6 @@
 "use client";
 
-// Dashboard Main Page — pixel-perfect conversion of the ChemTrade Pro Supplier Dashboard
+// Dashboard Main Page — pixel-perfect conversion of the Selihom Gebeya Supplier Dashboard
 // Includes metrics cards, critical alerts, quick actions, latest RFQs, and recently added chemicals
 
 import { useState, useEffect } from "react";

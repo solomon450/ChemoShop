@@ -1,6 +1,6 @@
 "use client";
 
-// Chemical Detail page — exact conversion of ChemTrade Pro product detail
+// Chemical Detail page — exact conversion of Selihom Gebeya product detail
 // Data-driven: uses useParams to find chemical from mock data by ID
 
 import Link from "next/link";

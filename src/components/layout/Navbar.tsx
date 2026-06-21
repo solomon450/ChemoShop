@@ -1,6 +1,6 @@
 "use client";
 
-// Navbar — exact match of ChemTrade Pro top navigation + cart badge + cart dialog
+// Navbar — exact match of Selihom Gebeya top navigation
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -28,7 +28,7 @@ export function Navbar({ id }: { id?: string }) {
         {/* Logo + Nav Links */}
         <div className="flex items-center gap-10">
           <Link href="/" className="text-headline-md font-bold text-primary">
-            ChemTrade Pro
+            Selihom Gebeya
           </Link>
           <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (

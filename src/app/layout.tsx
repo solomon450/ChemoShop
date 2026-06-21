@@ -17,7 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ChemTrade Pro | B2B Chemical Marketplace",
+  title: "Selihom Gebeya | B2B Chemical Marketplace",
   description:
     "Connecting global manufacturers with verified suppliers. Browse chemicals, request quotes, and manage your supply chain.",
   icons: {
@@ -45,10 +45,10 @@ export default function RootLayout({
               <div className="flex flex-col md:flex-row justify-between items-center py-6 px-4 md:px-8 max-w-[1440px] mx-auto gap-6">
                 <div className="flex flex-col gap-2">
                   <span className="font-mono text-label-md font-bold text-on-surface">
-                    ChemTrade Pro
+                    Selihon Gebeya
                   </span>
                   <span className="text-body-sm text-on-surface-variant">
-                    &copy; 2024 ChemTrade Pro B2B Marketplace. All rights reserved.
+                    &copy; 2024 Selihom Gebeya B2B Marketplace. All rights reserved.
                   </span>
                 </div>
                 <div className="flex flex-wrap justify-center gap-6">

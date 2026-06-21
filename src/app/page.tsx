@@ -1,6 +1,6 @@
 "use client";
 
-// Home page — exact conversion of ChemTrade Pro landing page
+// Home page — exact conversion of Selihom Gebeya landing page
 // Trending chemicals data-driven from mock data, cards link to /chemicals/[id]
 
 import { useState, useRef, useEffect, useCallback } from "react";

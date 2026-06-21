@@ -1,6 +1,6 @@
 "use client";
 
-// RFQ (Request for Quote) page — exact conversion of ChemTrade Pro RFQ form
+// RFQ (Request for Quote) page — exact conversion of Selihom Gebeya RFQ form
 
 import { useState } from "react";
 import Link from "next/link";
