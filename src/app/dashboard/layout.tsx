@@ -37,6 +37,7 @@ function getPageTitle(pathname: string): string {
   if (pathname === "/dashboard/chemicals") return "My Chemicals";
   if (pathname === "/dashboard/chemicals/new") return "Add Chemical";
   if (pathname === "/dashboard/orders") return "Requests/Orders";
+  if (pathname.startsWith("/dashboard/chemicals/")) return "Chemical Detail";
   return "Dashboard";
 }
 
