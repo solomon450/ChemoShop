@@ -70,7 +70,7 @@ export function Navbar({ id }: { id?: string }) {
           <button className="hidden lg:block px-6 h-10 border border-secondary text-secondary font-bold hover:bg-surface-container-low transition-all">
             Sign In
           </button>
-          <Link href="/dashboard/chemicals/new" className="px-6 h-10 bg-secondary text-on-primary font-bold hover:opacity-90 transition-all">
+          <Link href="/dashboard/chemicals/new" className="px-6 flex justify-center items-center h-10 bg-secondary text-on-primary font-bold hover:opacity-90 transition-all">
             Sell Chemicals
           </Link>
         </div>
