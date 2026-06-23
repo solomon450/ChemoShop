@@ -3,7 +3,7 @@
 // Chemicals / Marketplace page — exact conversion of Selihom Gebeya search results
 // Data-driven: uses mock data, rows link to /chemicals/[id]
 
-import { useState, useMemo } from "react";
+import { Suspense, useState, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -24,9 +24,9 @@ const allCategories = Array.from(new Set(chemicals.map((c) => c.category))).sort
 const allPurities = ["99.9%", "99.5%", "98%", "97%", "95%"];
 const allLocations = Array.from(new Set(chemicals.map((c) => c.supplier.location.split(", ").pop() || c.supplier.location))).sort();
 
-/* ─────────────────── COMPONENT ─────────────────── */
+/* ─────────────────── CONTENT (uses useSearchParams — must be inside Suspense) ─────────────────── */
 
-export default function ChemicalsPage() {
+function ChemicalsContent() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get("category");
 
@@ -489,5 +489,15 @@ export default function ChemicalsPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+/* ─────────────────── PAGE EXPORT (wraps content in Suspense for useSearchParams) ─────────────────── */
+
+export default function ChemicalsPage() {
+  return (
+    <Suspense fallback={<div className="max-w-[1440px] mx-auto px-4 md:px-8 py-6"><div className="animate-pulse h-8 w-48 bg-surface-container-high rounded mb-4" /><div className="animate-pulse h-64 bg-surface-container rounded" /></div>}>
+      <ChemicalsContent />
+    </Suspense>
   );
 }
